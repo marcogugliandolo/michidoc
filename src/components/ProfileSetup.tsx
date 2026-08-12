@@ -54,7 +54,8 @@ export function ProfileSetup({ onComplete }: { onComplete: (p: CatProfile) => vo
               ) : (
                 <div className="flex flex-col items-center">
                   <Camera size={32} />
-                  <span className="text-xs font-medium mt-1">Añadir foto</span>
+                  <span className="text-xs font-medium mt-1">Cámara o</span>
+                  <span className="text-xs font-medium">Galería</span>
                 </div>
               )}
             </button>

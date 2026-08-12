@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CatProfile, HistoryRecord, PainResult, BCSResult } from './types';
-import { getProfile, saveProfile, getHistory, addHistoryRecord, clearData } from './db';
+import { getProfile, saveProfile, getHistory, addHistoryRecord, clearData, getAuthState, setAuthState } from './db';
+import { Login } from './components/Login';
 import { ProfileSetup } from './components/ProfileSetup';
 import { Home } from './components/Home';
 import { PainCheck } from './components/PainCheck';
@@ -9,6 +10,7 @@ import { History as HistoryView } from './components/History';
 import { Loader2 } from 'lucide-react';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profile, setProfile] = useState<CatProfile | null>(null);
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,14 +18,28 @@ export default function App() {
 
   useEffect(() => {
     async function loadData() {
-      const p = await getProfile();
-      const h = await getHistory();
-      setProfile(p);
-      setHistory(h);
+      const auth = await getAuthState();
+      setIsAuthenticated(auth);
+      
+      if (auth) {
+        const p = await getProfile();
+        const h = await getHistory();
+        setProfile(p);
+        setHistory(h);
+      }
       setLoading(false);
     }
     loadData();
   }, []);
+
+  const handleLogin = async () => {
+    await setAuthState(true);
+    setIsAuthenticated(true);
+    const p = await getProfile();
+    const h = await getHistory();
+    setProfile(p);
+    setHistory(h);
+  };
 
   const handleProfileComplete = async (p: CatProfile) => {
     await saveProfile(p);
@@ -31,8 +47,9 @@ export default function App() {
   };
 
   const handleReset = async () => {
-    if (confirm("¿Estás seguro de que deseas borrar los datos de tu gato? Esto no se puede deshacer.")) {
+    if (confirm("¿Estás seguro de que deseas cerrar sesión y borrar los datos de tu gato? Esto no se puede deshacer.")) {
       await clearData();
+      setIsAuthenticated(false);
       setProfile(null);
       setHistory([]);
       setCurrentView('home');
@@ -76,7 +93,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-gray-900 font-sans selection:bg-orange-200">
-      {!profile ? (
+      {!isAuthenticated ? (
+        <Login onLogin={handleLogin} />
+      ) : !profile ? (
         <ProfileSetup onComplete={handleProfileComplete} />
       ) : (
         <>

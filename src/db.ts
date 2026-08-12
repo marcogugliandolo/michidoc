@@ -20,7 +20,18 @@ export async function addHistoryRecord(record: HistoryRecord): Promise<void> {
   await update(HISTORY_KEY, (val = []) => [record, ...val]);
 }
 
+const AUTH_KEY = 'michidoc_auth';
+
+export async function getAuthState(): Promise<boolean> {
+  return await get(AUTH_KEY) || false;
+}
+
+export async function setAuthState(isLoggedIn: boolean): Promise<void> {
+  await set(AUTH_KEY, isLoggedIn);
+}
+
 export async function clearData(): Promise<void> {
   await set(PROFILE_KEY, null);
   await set(HISTORY_KEY, []);
+  await set(AUTH_KEY, false);
 }

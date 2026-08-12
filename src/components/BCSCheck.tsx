@@ -100,7 +100,7 @@ export function BCSCheck({ onBack, onSave }: { onBack: () => void, onSave: (phot
               className="w-full aspect-[3/4] rounded-2xl border-2 border-dashed border-orange-200 bg-orange-50 flex flex-col items-center justify-center text-orange-500 hover:bg-orange-100 transition-colors p-2 text-center"
             >
               <Camera size={32} className="mb-2" />
-              <span className="text-xs font-medium">Añadir foto</span>
+              <span className="text-xs font-medium">Cámara o<br/>Galería</span>
             </button>
           ) : (
             <div className="relative">
@@ -126,7 +126,7 @@ export function BCSCheck({ onBack, onSave }: { onBack: () => void, onSave: (phot
               className="w-full aspect-[3/4] rounded-2xl border-2 border-dashed border-orange-200 bg-orange-50 flex flex-col items-center justify-center text-orange-500 hover:bg-orange-100 transition-colors p-2 text-center"
             >
               <Camera size={32} className="mb-2" />
-              <span className="text-xs font-medium">Añadir foto</span>
+              <span className="text-xs font-medium">Cámara o<br/>Galería</span>
             </button>
           ) : (
             <div className="relative">

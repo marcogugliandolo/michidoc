@@ -82,7 +82,7 @@ export function PainCheck({ onBack, onSave }: { onBack: () => void, onSave: (pho
           className="w-full aspect-square rounded-3xl border-2 border-dashed border-orange-200 bg-orange-50 flex flex-col items-center justify-center text-orange-500 hover:bg-orange-100 transition-colors"
         >
           <Camera size={48} className="mb-4" />
-          <span className="font-semibold text-lg">Tomar o subir foto</span>
+          <span className="font-semibold text-lg">Cámara o Galería</span>
         </button>
       ) : (
         <div className="relative">
