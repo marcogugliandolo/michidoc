@@ -1,37 +1,65 @@
-import { get, set, update } from 'idb-keyval';
 import { CatProfile, HistoryRecord } from './types';
 
-const PROFILE_KEY = 'michidoc_profile';
-const HISTORY_KEY = 'michidoc_history';
+function getUserId(): number | null {
+  const id = localStorage.getItem('userId');
+  return id ? parseInt(id, 10) : null;
+}
+
+export async function getAuthState(): Promise<boolean> {
+  return !!getUserId();
+}
+
+export async function setAuthState(isLoggedIn: boolean, userId?: number): Promise<void> {
+  if (isLoggedIn && userId) {
+    localStorage.setItem('userId', userId.toString());
+  } else {
+    localStorage.removeItem('userId');
+  }
+}
 
 export async function getProfile(): Promise<CatProfile | null> {
-  return await get(PROFILE_KEY) || null;
+  const userId = getUserId();
+  if (!userId) return null;
+  const res = await fetch(`/api/profile?userId=${userId}`);
+  if (!res.ok) return null;
+  return await res.json();
 }
 
 export async function saveProfile(profile: CatProfile): Promise<void> {
-  await set(PROFILE_KEY, profile);
+  const userId = getUserId();
+  if (!userId) return;
+  await fetch('/api/profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, ...profile })
+  });
 }
 
 export async function getHistory(): Promise<HistoryRecord[]> {
-  return await get(HISTORY_KEY) || [];
+  const userId = getUserId();
+  if (!userId) return [];
+  const res = await fetch(`/api/history?userId=${userId}`);
+  if (!res.ok) return [];
+  return await res.json();
 }
 
 export async function addHistoryRecord(record: HistoryRecord): Promise<void> {
-  await update(HISTORY_KEY, (val = []) => [record, ...val]);
-}
-
-const AUTH_KEY = 'michidoc_auth';
-
-export async function getAuthState(): Promise<boolean> {
-  return await get(AUTH_KEY) || false;
-}
-
-export async function setAuthState(isLoggedIn: boolean): Promise<void> {
-  await set(AUTH_KEY, isLoggedIn);
+  const userId = getUserId();
+  if (!userId) return;
+  await fetch('/api/history', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, ...record })
+  });
 }
 
 export async function clearData(): Promise<void> {
-  await set(PROFILE_KEY, null);
-  await set(HISTORY_KEY, []);
-  await set(AUTH_KEY, false);
+  const userId = getUserId();
+  if (!userId) return;
+  await fetch('/api/clear-data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId })
+  });
+  setAuthState(false);
 }

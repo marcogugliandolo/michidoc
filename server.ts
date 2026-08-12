@@ -3,6 +3,8 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
+import Database from "better-sqlite3";
+import fs from "fs";
 
 dotenv.config();
 
@@ -13,6 +15,48 @@ const PORT = 3000;
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+let db: ReturnType<typeof Database>;
+
+async function setupDB() {
+  const dataDir = path.join(process.cwd(), "data");
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+
+  db = new Database(path.join(dataDir, "michidoc.db"));
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE,
+      password TEXT
+    );
+    CREATE TABLE IF NOT EXISTS profiles (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER UNIQUE,
+      name TEXT,
+      age TEXT,
+      breed TEXT,
+      photoUrl TEXT
+    );
+    CREATE TABLE IF NOT EXISTS history (
+      id TEXT PRIMARY KEY,
+      user_id INTEGER,
+      date INTEGER,
+      type TEXT,
+      photoUrl TEXT,
+      photoUrl2 TEXT,
+      result TEXT
+    );
+  `);
+
+  // Seed default user for testing if it doesn't exist
+  const user = db.prepare("SELECT * FROM users WHERE username = ?").get("marco");
+  if (!user) {
+    db.prepare("INSERT INTO users (username, password) VALUES (?, ?)").run("marco", "marco2026");
+  }
+}
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
   httpOptions: {
@@ -20,6 +64,84 @@ const ai = new GoogleGenAI({
       "User-Agent": "aistudio-build",
     },
   },
+});
+
+// DB Endpoints
+app.post("/api/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = db.prepare("SELECT id FROM users WHERE username = ? AND password = ?").get(username, password) as { id: number } | undefined;
+    if (user) {
+      res.json({ success: true, userId: user.id });
+    } else {
+      res.status(401).json({ error: "Usuario o contraseña incorrectos" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get("/api/profile", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const profile = db.prepare("SELECT * FROM profiles WHERE user_id = ?").get(userId);
+    res.json(profile || null);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/api/profile", async (req, res) => {
+  try {
+    const { userId, name, age, breed, photoUrl } = req.body;
+    const existing = db.prepare("SELECT id FROM profiles WHERE user_id = ?").get(userId);
+    if (existing) {
+      db.prepare("UPDATE profiles SET name = ?, age = ?, breed = ?, photoUrl = ? WHERE user_id = ?").run(name, age, breed, photoUrl, userId);
+    } else {
+      db.prepare("INSERT INTO profiles (user_id, name, age, breed, photoUrl) VALUES (?, ?, ?, ?, ?)").run(userId, name, age, breed, photoUrl);
+    }
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get("/api/history", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const records = db.prepare("SELECT * FROM history WHERE user_id = ? ORDER BY date DESC").all(userId) as any[];
+    // Parse result JSON strings back to objects
+    const parsed = records.map(r => ({
+      ...r,
+      result: JSON.parse(r.result)
+    }));
+    res.json(parsed);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/api/history", async (req, res) => {
+  try {
+    const { id, userId, date, type, photoUrl, photoUrl2, result } = req.body;
+    db.prepare(
+      "INSERT INTO history (id, user_id, date, type, photoUrl, photoUrl2, result) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    ).run(id, userId, date, type, photoUrl, photoUrl2, JSON.stringify(result));
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/api/clear-data", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    db.prepare("DELETE FROM profiles WHERE user_id = ?").run(userId);
+    db.prepare("DELETE FROM history WHERE user_id = ?").run(userId);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // APIs
@@ -129,6 +251,8 @@ Devuelve un JSON con:
 });
 
 async function startServer() {
+  await setupDB();
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },

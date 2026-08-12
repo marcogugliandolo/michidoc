@@ -33,7 +33,6 @@ export default function App() {
   }, []);
 
   const handleLogin = async () => {
-    await setAuthState(true);
     setIsAuthenticated(true);
     const p = await getProfile();
     const h = await getHistory();

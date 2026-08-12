@@ -2,19 +2,37 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Card, Button } from './ui';
 import { Logo } from './Logo';
+import { setAuthState } from '../db';
 
 export function Login({ onLogin }: { onLogin: () => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim().toLowerCase() === 'marco' && password === 'marco2026') {
-      setError('');
-      onLogin();
-    } else {
-      setError('Usuario o contraseña incorrectos.');
+    setLoading(true);
+    setError('');
+    
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      
+      const data = await res.json();
+      if (res.ok && data.success) {
+        await setAuthState(true, data.userId);
+        onLogin();
+      } else {
+        setError(data.error || 'Usuario o contraseña incorrectos.');
+      }
+    } catch (err) {
+      setError('Error de conexión.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,9 +87,9 @@ export function Login({ onLogin }: { onLogin: () => void }) {
             type="submit" 
             size="lg" 
             className="w-full mt-4"
-            disabled={!username || !password}
+            disabled={!username || !password || loading}
           >
-            Entrar
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
 
         </form>
