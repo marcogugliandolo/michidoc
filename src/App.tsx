@@ -8,6 +8,7 @@ import { PainCheck } from './components/PainCheck';
 import { BCSCheck } from './components/BCSCheck';
 import { History as HistoryView } from './components/History';
 import { Loader2 } from 'lucide-react';
+import { ThemeToggle } from './components/ThemeToggle';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -91,7 +92,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-gray-900 font-sans selection:bg-orange-200">
+    <div className="min-h-screen bg-[#faf8f5] dark:bg-neutral-950 text-gray-900 dark:text-neutral-100 font-sans selection:bg-orange-200 dark:selection:bg-orange-900 transition-colors duration-200">
+      <ThemeToggle />
       {!isAuthenticated ? (
         <Login onLogin={handleLogin} />
       ) : !profile ? (

@@ -21,9 +21,9 @@ export function Button({
         "inline-flex items-center justify-center rounded-2xl font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
         {
           'bg-orange-500 text-white hover:bg-orange-600 shadow-md': variant === 'primary',
-          'bg-orange-100 text-orange-800 hover:bg-orange-200': variant === 'secondary',
-          'border-2 border-orange-200 text-orange-700 hover:bg-orange-50': variant === 'outline',
-          'text-orange-700 hover:bg-orange-100': variant === 'ghost',
+          'bg-orange-100 text-orange-800 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/50': variant === 'secondary',
+          'border-2 border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-900/50 dark:text-orange-400 dark:hover:bg-orange-900/20': variant === 'outline',
+          'text-orange-700 hover:bg-orange-100 dark:text-orange-400 dark:hover:bg-orange-900/30': variant === 'ghost',
           'px-3 py-1.5 text-sm': size === 'sm',
           'px-5 py-3 text-base': size === 'md',
           'px-8 py-4 text-lg': size === 'lg',
@@ -38,7 +38,7 @@ export function Button({
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("bg-white rounded-3xl p-6 shadow-sm border border-orange-50/50", className)}
+      className={cn("bg-white dark:bg-neutral-900 rounded-3xl p-6 shadow-sm border border-orange-50/50 dark:border-neutral-800", className)}
       {...props}
     />
   );
