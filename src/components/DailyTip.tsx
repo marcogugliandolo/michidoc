@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Cat } from 'lucide-react';
 
 const CAT_TIPS = [
   {
@@ -61,8 +62,14 @@ export function DailyTip() {
   }, []);
 
   return (
-    <div className="rounded-[28px] p-6 sm:p-8 bg-neutral-50/50 dark:bg-[#121212] border border-neutral-200/50 dark:border-neutral-800/80 transition-colors">
-      <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+    <div className="rounded-[28px] p-6 sm:p-8 bg-neutral-50/50 dark:bg-[#121212] border border-neutral-200/50 dark:border-neutral-800/80 transition-colors relative overflow-hidden group">
+      
+      {/* Decorative Cat Icon Background */}
+      <div className="absolute -right-4 -bottom-4 text-orange-500/5 dark:text-orange-500/5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
+        <Cat size={120} strokeWidth={1} />
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center relative z-10">
         <div className="w-14 h-14 rounded-[20px] bg-white dark:bg-neutral-800 border border-neutral-200/50 dark:border-neutral-700/50 flex items-center justify-center text-[26px] shrink-0 shadow-sm">
           {dailyTip.emoji}
         </div>
@@ -75,7 +82,7 @@ export function DailyTip() {
           <h4 className="font-semibold text-neutral-900 dark:text-white text-[16px] mb-1">
             {dailyTip.title}
           </h4>
-          <p className="text-[14px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="text-[14px] text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-[90%]">
             {dailyTip.tip}
           </p>
         </div>

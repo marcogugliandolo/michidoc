@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, Cat } from 'lucide-react';
 import { cn } from './ui';
 import { resizeImage } from '../imageUtils';
 import { CatProfile } from '../types';
@@ -34,16 +34,25 @@ export function ProfileSetup({ onComplete }: { onComplete: (p: CatProfile) => vo
   const breedSuggestions = ['Común Europeo', 'Siamés', 'Persa', 'Mestizo'];
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] dark:bg-[#0a0a0a] flex flex-col items-center justify-center p-4 sm:p-8 relative selection:bg-orange-200 dark:selection:bg-orange-900 transition-colors duration-300">
+    <div className="min-h-screen bg-[#faf8f5] dark:bg-[#0a0a0a] flex flex-col items-center justify-center p-4 sm:p-8 relative selection:bg-orange-200 dark:selection:bg-orange-900 transition-colors duration-300 overflow-hidden">
       <div className="absolute top-6 right-6 z-20">
         <ThemeToggle />
       </div>
+
+      {/* Decorative Cat Background Elements */}
+      <motion.div 
+        animate={{ rotate: [0, 5, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -bottom-10 -left-10 text-orange-500/5 dark:text-orange-500/5 pointer-events-none"
+      >
+        <Cat size={400} strokeWidth={0.5} />
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md bg-white dark:bg-[#121212] rounded-[32px] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-neutral-100 dark:border-neutral-800/80 relative z-10"
+        className="w-full max-w-md bg-white/90 dark:bg-[#121212]/90 backdrop-blur-xl rounded-[32px] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-neutral-100 dark:border-neutral-800/80 relative z-10"
       >
         {/* Header */}
         <div className="text-center mb-10">

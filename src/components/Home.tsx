@@ -1,6 +1,6 @@
 import React from 'react';
 import { CatProfile, HistoryRecord } from '../types';
-import { Cat, Scale, PawPrint, Calendar, Sparkles } from 'lucide-react';
+import { Cat, Scale, PawPrint, Calendar, Sparkles, Fish } from 'lucide-react';
 import { DailyTip } from './DailyTip';
 import { cn } from './ui';
 import { motion } from 'motion/react';
@@ -19,10 +19,19 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
   const lastBCSRecord = bcsRecords.length > 0 ? bcsRecords[bcsRecords.length - 1] : null;
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-700">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-700 relative">
       
+      {/* Decorative Paw Background Element */}
+      <motion.div 
+        animate={{ rotate: [-5, 5, -5] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-20 right-0 text-orange-500/5 dark:text-orange-500/5 pointer-events-none z-[-1]"
+      >
+        <PawPrint size={250} strokeWidth={0.5} />
+      </motion.div>
+
       {/* Hero Welcome */}
-      <section className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
+      <section className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 relative z-10">
         <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm shrink-0">
           <img 
             src={profile.photoUrl} 
@@ -49,12 +58,12 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
       </section>
 
       {/* Main Bento Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 relative z-10">
         
         {/* Pain Check Card */}
         <button 
           onClick={() => onNavigate('pain')}
-          className="group relative overflow-hidden text-left bg-white dark:bg-[#121212] rounded-[32px] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01] cursor-pointer min-h-[220px] flex flex-col justify-between"
+          className="group relative overflow-hidden text-left bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md rounded-[32px] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01] cursor-pointer min-h-[220px] flex flex-col justify-between"
         >
           {/* Subtle Watermark */}
           <div className="absolute -bottom-6 -right-6 text-neutral-100 dark:text-neutral-900/50 group-hover:text-orange-50 dark:group-hover:text-orange-900/20 transition-colors pointer-events-none z-0">
@@ -69,7 +78,7 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
               Chequeo de Dolor
             </h2>
             <p className="text-[14px] text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-[280px]">
-              Analiza su rostro mediante la Escala de Mueca Felina para detectar signos de malestar.
+              Analiza sus bigotes y orejitas mediante la Escala de Mueca Felina para detectar signos de malestar.
             </p>
           </div>
           
@@ -81,7 +90,7 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
               }
             </span>
             <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-colors text-neutral-400">
-              <Sparkles size={14} />
+              <Fish size={14} />
             </div>
           </div>
         </button>
@@ -89,7 +98,7 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
         {/* BCS Check Card */}
         <button 
           onClick={() => onNavigate('bcs')}
-          className="group relative overflow-hidden text-left bg-white dark:bg-[#121212] rounded-[32px] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01] cursor-pointer min-h-[220px] flex flex-col justify-between"
+          className="group relative overflow-hidden text-left bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md rounded-[32px] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01] cursor-pointer min-h-[220px] flex flex-col justify-between"
         >
           {/* Subtle Watermark */}
           <div className="absolute -bottom-6 -right-6 text-neutral-100 dark:text-neutral-900/50 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors pointer-events-none z-0">
@@ -116,7 +125,7 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
               }
             </span>
             <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors text-neutral-400">
-              <Sparkles size={14} />
+              <Fish size={14} />
             </div>
           </div>
         </button>
@@ -124,10 +133,10 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
       </section>
 
       {/* History Shortcut */}
-      <section>
+      <section className="relative z-10">
         <button
           onClick={() => onNavigate('history')}
-          className="w-full bg-white dark:bg-[#121212] rounded-[24px] p-5 sm:p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-all flex items-center justify-between group cursor-pointer"
+          className="w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-md rounded-[24px] p-5 sm:p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-all flex items-center justify-between group cursor-pointer"
         >
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-neutral-50 dark:bg-neutral-800/50 flex items-center justify-center">
@@ -135,7 +144,7 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
             </div>
             <div className="text-left">
               <h3 className="text-[15px] font-bold text-neutral-900 dark:text-white">
-                Álbum Clínico
+                Diario de mi Michi
               </h3>
               <p className="text-[13px] text-neutral-500">
                 {records.length} {records.length === 1 ? 'registro guardado' : 'registros guardados'}
@@ -149,7 +158,7 @@ export function Home({ profile, records, onNavigate }: HomeProps) {
       </section>
 
       {/* Tip */}
-      <section>
+      <section className="relative z-10">
         <DailyTip />
       </section>
 

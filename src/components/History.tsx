@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Activity, Scale, History as HistoryIcon } from 'lucide-react';
+import { ArrowLeft, Activity, Scale, History as HistoryIcon, PawPrint, Cat } from 'lucide-react';
 import { HistoryRecord, BCSHistoryRecord, PainHistoryRecord } from '../types';
 import { cn } from './ui';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -131,9 +131,18 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
         <div className="lg:col-span-7 space-y-4">
           {filteredRecords.length === 0 ? (
             <motion.div variants={itemVariants} className="text-center py-20 bg-white dark:bg-[#121212] rounded-[28px] border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm">
-              <HistoryIcon size={48} strokeWidth={1} className="mx-auto mb-4 text-neutral-300 dark:text-neutral-700" />
+              <div className="relative flex justify-center items-center mx-auto mb-6 w-16 h-16">
+                <Cat size={64} strokeWidth={1} className="text-neutral-300 dark:text-neutral-700" />
+                <motion.div 
+                  animate={{ opacity: [0, 1, 0], y: [0, -10, -20], x: [0, 5, 10] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                  className="absolute -top-2 -right-4 font-bold text-neutral-400 text-lg"
+                >
+                  Zzz
+                </motion.div>
+              </div>
               <h3 className="font-semibold text-neutral-900 dark:text-white text-[16px] mb-2">
-                Aún no hay registros
+                Miau... aún no hay registros
               </h3>
               <p className="text-[14px] text-neutral-500 max-w-xs mx-auto">
                 {filter === 'all' 
@@ -148,13 +157,15 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
                 
                 return (
                   <motion.div variants={itemVariants} key={record.id} className="relative pl-6 sm:pl-8">
-                    {/* Timeline Dot */}
+                    {/* Timeline Paw Print Dot */}
                     <div className={cn(
-                      "absolute -left-[9px] top-5 w-4 h-4 rounded-full border-2 border-[#faf8f5] dark:border-[#0a0a0a]",
+                      "absolute -left-[15px] top-6 w-7 h-7 rounded-full border-[3px] border-[#faf8f5] dark:border-[#0a0a0a] flex items-center justify-center",
                       isPain 
-                        ? "bg-orange-500" 
-                        : "bg-blue-500"
-                    )} />
+                        ? "bg-orange-500 text-white" 
+                        : "bg-blue-500 text-white"
+                    )}>
+                       <PawPrint size={12} strokeWidth={3} />
+                    </div>
 
                     <div className="rounded-[24px] bg-white dark:bg-[#121212] p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-shadow group">
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-neutral-100 dark:border-neutral-800/80">

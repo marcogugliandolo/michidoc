@@ -91,13 +91,25 @@ export function Login({ onLogin }: { onLogin: () => void }) {
         <ThemeToggle />
       </div>
 
-      {/* Main Login Card */}
+      {/* Main Login Card Container */}
       <motion.div 
         initial={{ opacity: 0, y: 20, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-[420px] bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl rounded-3xl p-7 sm:p-9 shadow-2xl shadow-orange-950/10 dark:shadow-black/40 border-2 border-orange-200/70 dark:border-neutral-800 relative z-10"
+        className="relative w-full max-w-[420px] z-10 mt-10"
       >
+        {/* Peeking Cat over the card */}
+        <div className="absolute -top-11 left-1/2 -translate-x-1/2 w-24 h-12 overflow-hidden flex justify-center z-[-1]">
+          <motion.div
+            animate={{ y: [16, 2, 16] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="w-full flex justify-center"
+          >
+            <Logo className="w-20 h-20 -mt-1 drop-shadow-md" />
+          </motion.div>
+        </div>
+
+        <div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl rounded-3xl p-7 sm:p-9 shadow-2xl shadow-orange-950/10 dark:shadow-black/40 border-2 border-orange-200/70 dark:border-neutral-800 relative">
         {/* Brand & Mascot Header */}
         <div className="text-center mb-6">
           <motion.div 
@@ -233,6 +245,7 @@ export function Login({ onLogin }: { onLogin: () => void }) {
             <span>✨</span>
             <span>Si es tu primera vez, ingresa cualquier usuario y contraseña</span>
           </p>
+        </div>
         </div>
       </motion.div>
     </div>

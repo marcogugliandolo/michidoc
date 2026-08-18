@@ -7,8 +7,9 @@ import { Home } from './components/Home';
 import { PainCheck } from './components/PainCheck';
 import { BCSCheck } from './components/BCSCheck';
 import { History as HistoryView } from './components/History';
-import { Loader2 } from 'lucide-react';
 import { AppLayout } from './components/AppLayout';
+import { Logo } from './components/Logo';
+import { motion } from 'motion/react';
 import { EditProfileModal } from './components/EditProfileModal';
 import { LogoutConfirmModal } from './components/LogoutConfirmModal';
 
@@ -102,8 +103,16 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#faf8f5] dark:bg-neutral-950 flex items-center justify-center transition-colors duration-200">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-400" />
+      <div className="min-h-screen bg-[#faf8f5] dark:bg-neutral-950 flex flex-col items-center justify-center transition-colors duration-200">
+        <motion.div 
+          animate={{ y: [-10, 0, -10] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+        >
+          <Logo className="w-16 h-16 drop-shadow-lg mb-4" />
+        </motion.div>
+        <span className="text-orange-500/80 font-bold tracking-widest text-[13px] animate-pulse">
+          DESPERTANDO AL MICHI...
+        </span>
       </div>
     );
   }
