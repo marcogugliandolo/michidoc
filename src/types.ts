@@ -18,11 +18,22 @@ export interface BCSResult {
   recommendation: string;
 }
 
-export interface HistoryRecord {
+export interface PainHistoryRecord {
   id: string;
   date: number;
-  type: "pain" | "bcs";
-  photoUrl?: string; // thumbnail
-  photoUrl2?: string; // for bcs side image
-  result: PainResult | BCSResult;
+  type: "pain";
+  photoUrl?: string;
+  photoUrl2?: string;
+  result: PainResult;
 }
+
+export interface BCSHistoryRecord {
+  id: string;
+  date: number;
+  type: "bcs";
+  photoUrl?: string;
+  photoUrl2?: string;
+  result: BCSResult;
+}
+
+export type HistoryRecord = PainHistoryRecord | BCSHistoryRecord;

@@ -8,7 +8,9 @@ import { PainCheck } from './components/PainCheck';
 import { BCSCheck } from './components/BCSCheck';
 import { History as HistoryView } from './components/History';
 import { Loader2 } from 'lucide-react';
-import { ThemeToggle } from './components/ThemeToggle';
+import { AppLayout } from './components/AppLayout';
+import { EditProfileModal } from './components/EditProfileModal';
+import { LogoutConfirmModal } from './components/LogoutConfirmModal';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,6 +18,8 @@ export default function App() {
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState<'home' | 'pain' | 'bcs' | 'history'>('home');
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -46,14 +50,27 @@ export default function App() {
     setProfile(p);
   };
 
-  const handleReset = async () => {
-    if (confirm("¿Estás seguro de que deseas cerrar sesión y borrar los datos de tu gato? Esto no se puede deshacer.")) {
-      await clearData();
-      setIsAuthenticated(false);
-      setProfile(null);
-      setHistory([]);
-      setCurrentView('home');
-    }
+  const handleUpdateProfile = async (updatedProfile: CatProfile) => {
+    await saveProfile(updatedProfile);
+    setProfile(updatedProfile);
+  };
+
+  const handleLogout = async () => {
+    await setAuthState(false);
+    setIsAuthenticated(false);
+    setProfile(null);
+    setHistory([]);
+    setCurrentView('home');
+    setIsLogoutModalOpen(false);
+  };
+
+  const handleClearAll = async () => {
+    await clearData();
+    setIsAuthenticated(false);
+    setProfile(null);
+    setHistory([]);
+    setCurrentView('home');
+    setIsLogoutModalOpen(false);
   };
 
   const handleSavePain = async (photoUrl: string, result: PainResult) => {
@@ -66,7 +83,7 @@ export default function App() {
     };
     await addHistoryRecord(record);
     setHistory(prev => [record, ...prev]);
-    setCurrentView('home');
+    setCurrentView('history');
   };
 
   const handleSaveBcs = async (photoUrl: string, photoUrl2: string, result: BCSResult) => {
@@ -80,12 +97,12 @@ export default function App() {
     };
     await addHistoryRecord(record);
     setHistory(prev => [record, ...prev]);
-    setCurrentView('home');
+    setCurrentView('history');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
+      <div className="min-h-screen bg-[#faf8f5] dark:bg-neutral-950 flex items-center justify-center transition-colors duration-200">
         <Loader2 className="w-8 h-8 animate-spin text-orange-400" />
       </div>
     );
@@ -93,36 +110,67 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] dark:bg-neutral-950 text-gray-900 dark:text-neutral-100 font-sans selection:bg-orange-200 dark:selection:bg-orange-900 transition-colors duration-200">
-      <ThemeToggle />
       {!isAuthenticated ? (
         <Login onLogin={handleLogin} />
       ) : !profile ? (
         <ProfileSetup onComplete={handleProfileComplete} />
       ) : (
         <>
-          {currentView === 'home' && (
-            <Home 
-              profile={profile} 
-              onNavigate={setCurrentView} 
-              onReset={handleReset} 
+          <AppLayout
+            currentView={currentView}
+            onNavigate={setCurrentView}
+            profile={profile}
+            records={history}
+            onReset={() => setIsLogoutModalOpen(true)}
+            onEditProfile={() => setIsEditProfileOpen(true)}
+          >
+            {currentView === 'home' && (
+              <Home 
+                profile={profile} 
+                records={history}
+                onNavigate={setCurrentView} 
+                onReset={() => setIsLogoutModalOpen(true)} 
+                onEditProfile={() => setIsEditProfileOpen(true)}
+              />
+            )}
+            {currentView === 'pain' && (
+              <PainCheck 
+                onBack={() => setCurrentView('home')} 
+                onSave={handleSavePain} 
+              />
+            )}
+            {currentView === 'bcs' && (
+              <BCSCheck 
+                onBack={() => setCurrentView('home')} 
+                onSave={handleSaveBcs} 
+              />
+            )}
+            {currentView === 'history' && (
+              <HistoryView 
+                onBack={() => setCurrentView('home')} 
+                records={history} 
+              />
+            )}
+          </AppLayout>
+
+          {/* Edit Profile Modal */}
+          {isEditProfileOpen && (
+            <EditProfileModal
+              isOpen={isEditProfileOpen}
+              onClose={() => setIsEditProfileOpen(false)}
+              profile={profile}
+              onSave={handleUpdateProfile}
             />
           )}
-          {currentView === 'pain' && (
-            <PainCheck 
-              onBack={() => setCurrentView('home')} 
-              onSave={handleSavePain} 
-            />
-          )}
-          {currentView === 'bcs' && (
-            <BCSCheck 
-              onBack={() => setCurrentView('home')} 
-              onSave={handleSaveBcs} 
-            />
-          )}
-          {currentView === 'history' && (
-            <HistoryView 
-              onBack={() => setCurrentView('home')} 
-              records={history} 
+
+          {/* Clean Logout Confirmation Modal (No iframe window.confirm block) */}
+          {isLogoutModalOpen && (
+            <LogoutConfirmModal
+              isOpen={isLogoutModalOpen}
+              onClose={() => setIsLogoutModalOpen(false)}
+              onLogout={handleLogout}
+              onClearAll={handleClearAll}
+              catName={profile.name}
             />
           )}
         </>
