@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { User, Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { Button } from './ui';
+import { setAuthState } from '../db';
 import { Logo } from './Logo';
 import { WavingCat } from './WavingCat';
-import { setAuthState } from '../db';
 import { ThemeToggle } from './ThemeToggle';
-import { User, Lock, Eye, EyeOff, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export function Login({ onLogin }: { onLogin: () => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [isFocused, setIsFocused] = useState<'user' | 'pass' | null>(null);
 
-  const handleSubmit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!username.trim() || !password.trim()) return;
 
     setLoading(true);
@@ -43,12 +43,6 @@ export function Login({ onLogin }: { onLogin: () => void }) {
     }
   };
 
-  const handleQuickDemo = () => {
-    setUsername('MichiAmigo');
-    setPassword('michilover2026');
-    setError('');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#fffaf5] via-[#fff5eb] to-[#ffeedb] dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-300 select-none">
       
@@ -59,9 +53,9 @@ export function Login({ onLogin }: { onLogin: () => void }) {
 
       {/* Subtle Floating Paws in Background */}
       <motion.div 
-        animate={{ y: [0, -12, 0], opacity: [0.25, 0.45, 0.25] }} 
+        animate={{ y: [0, -15, 0], opacity: [0.3, 0.5, 0.3] }} 
         transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-12 left-10 text-3xl pointer-events-none select-none opacity-30 dark:opacity-15 hidden sm:block"
+        className="absolute top-14 left-10 text-4xl pointer-events-none select-none opacity-40 dark:opacity-20 hidden sm:block"
       >
         🐾
       </motion.div>
@@ -77,7 +71,7 @@ export function Login({ onLogin }: { onLogin: () => void }) {
         transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
         className="absolute top-20 right-16 text-2xl pointer-events-none select-none opacity-30 dark:opacity-15 hidden sm:block"
       >
-        🐟
+        ✨
       </motion.div>
       <motion.div 
         animate={{ y: [0, 12, 0], opacity: [0.2, 0.35, 0.2] }} 
@@ -199,20 +193,6 @@ export function Login({ onLogin }: { onLogin: () => void }) {
               </button>
             </div>
           </div>
-
-          {/* Quick Demo Helper Pill */}
-          {(!username || !password) && (
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleQuickDemo}
-                className="text-[11px] font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 bg-orange-100/70 dark:bg-neutral-800 px-2.5 py-1 rounded-full transition-all flex items-center gap-1 cursor-pointer hover:scale-102 active:scale-98"
-              >
-                <Sparkles size={11} />
-                Llenar con datos de prueba
-              </button>
-            </div>
-          )}
 
           {/* Error Message with Shake */}
           <AnimatePresence>

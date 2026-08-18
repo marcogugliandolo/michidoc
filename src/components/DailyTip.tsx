@@ -1,56 +1,56 @@
 import { useMemo } from 'react';
-import { Cat } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 const CAT_TIPS = [
   {
     emoji: "💧",
-    title: "Agua en movimiento",
+    title: "Agua fresca en movimiento",
     tip: "A los michis les encanta el agua que fluye. Una fuente puede animarlo a beber mucho más y cuidar su salud renal."
   },
   {
     emoji: "🧶",
-    title: "Hora de jugar",
-    tip: "15 minutos de juego diario con un plumero mantienen su figura perfecta y estimulan su instinto."
+    title: "15 Minutos de juego diario",
+    tip: "Un rato diario de persecución con un plumero mantiene su figura perfecta, quema energía y estimula su instinto cazador."
   },
   {
     emoji: "✨",
-    title: "Arenero impecable",
-    tip: "Los gatos son muy limpios. Limpiar su arenero a diario reduce el estrés y mantiene su hogar feliz."
+    title: "Arenero siempre limpio",
+    tip: "Los gatos son extremadamente limpios. Retirar los restos a diario reduce el estrés y previene problemas urinarios."
   },
   {
     emoji: "🐾",
-    title: "Cepillado suave",
-    tip: "Cepillar su pelaje no solo evita bolas de pelo, también fortalece el vínculo entre ustedes."
+    title: "Cepillado suave y regular",
+    tip: "Cepillar su pelaje no solo evita bolas de pelo en su estómago, también fortalece el vínculo afectivo entre ustedes."
   },
   {
     emoji: "🐱",
     title: "El lenguaje de sus bigotes",
-    tip: "Si sus bigotes están relajados hacia los lados, tu gatito está calmado y contento."
+    tip: "Si sus bigotes están relajados hacia los lados, tu gatito está en calma total. Si apuntan hacia adelante, está curioso."
   },
   {
-    emoji: "🐟",
-    title: "Snacks seguros",
-    tip: "Evita siempre la cebolla, el ajo o el chocolate. Prémialo con golosinas formuladas para felinos."
+    emoji: "🍗",
+    title: "Snacks sanos y seguros",
+    tip: "Evita siempre la cebolla, el ajo y el chocolate. Prémialo con golosinas o premios húmedos formulados especialmente para felinos."
   },
   {
     emoji: "📦",
-    title: "Refugio seguro",
-    tip: "Una simple caja de cartón les da seguridad y un escondite perfecto para jugar y observar."
+    title: "El poder de las cajas",
+    tip: "Una simple caja de cartón les da sensación de seguridad 360°, calidez y un escondite perfecto para descansar."
   },
   {
     emoji: "💤",
-    title: "Siestas al sol",
-    tip: "Tener una cama cómoda cerca de una ventana o una fuente de calor natural es su paraíso personal."
+    title: "Rincones cálidos al sol",
+    tip: "Tener un cojín cerca de una ventana donde entre el sol por las mañanas es su mayor momento de placer del día."
   },
   {
     emoji: "🩺",
-    title: "Revisión anual",
-    tip: "Una visita al veterinario de confianza al año ayuda a detectar a tiempo cualquier molestia."
+    title: "Chequeo veterinario preventivo",
+    tip: "Una visita anual al veterinario ayuda a prevenir cualquier malestar silencioso antes de que cause dolor."
   },
   {
     emoji: "🎶",
     title: "Terapia de ronroneo",
-    tip: "El ronroneo libera endorfinas que calman tanto a tu michi como a ti."
+    tip: "El ronroneo a bajas frecuencias (20-140 Hz) estimula la regeneración celular y transmite calma a toda la casa."
   }
 ];
 
@@ -62,27 +62,31 @@ export function DailyTip() {
   }, []);
 
   return (
-    <div className="rounded-[28px] p-6 sm:p-8 bg-neutral-50/50 dark:bg-[#121212] border border-neutral-200/50 dark:border-neutral-800/80 transition-colors relative overflow-hidden group">
+    <div className="rounded-[28px] p-6 sm:p-7 bg-[#E6F7F0] dark:bg-[#073827] border-2 border-[#9EE2C4] dark:border-[#0E6647] shadow-[0_4px_20px_rgb(16,185,129,0.12)] dark:shadow-[0_4px_25px_rgb(0,0,0,0.4)] transition-all relative overflow-hidden group">
       
-      {/* Decorative Cat Icon Background */}
-      <div className="absolute -right-4 -bottom-4 text-orange-500/5 dark:text-orange-500/5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-        <Cat size={120} strokeWidth={1} />
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center relative z-10">
-        <div className="w-14 h-14 rounded-[20px] bg-white dark:bg-neutral-800 border border-neutral-200/50 dark:border-neutral-700/50 flex items-center justify-center text-[26px] shrink-0 shadow-sm">
+      {/* Decorative Vibrant Watermark */}
+      <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-emerald-400/20 dark:bg-emerald-400/10 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+      
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start sm:items-center relative z-10">
+        
+        {/* Emoji Icon Container */}
+        <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#0c4733] border-2 border-[#A3E4C7] dark:border-[#147451] flex items-center justify-center text-[28px] shrink-0 shadow-sm group-hover:scale-105 transition-transform">
           {dailyTip.emoji}
         </div>
+
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-              Consejo del día
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-emerald-600 text-white text-[11px] font-bold uppercase tracking-wider shadow-xs">
+              <Sparkles size={11} className="text-emerald-200" />
+              Consejo del Día
             </span>
           </div>
-          <h4 className="font-semibold text-neutral-900 dark:text-white text-[16px] mb-1">
+
+          <h4 className="font-extrabold text-emerald-950 dark:text-emerald-100 text-[17px] mb-1 tracking-tight">
             {dailyTip.title}
           </h4>
-          <p className="text-[14px] text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-[90%]">
+
+          <p className="text-[14px] font-medium text-emerald-900/90 dark:text-emerald-200/90 leading-relaxed max-w-[95%]">
             {dailyTip.tip}
           </p>
         </div>

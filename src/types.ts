@@ -1,4 +1,5 @@
 export interface CatProfile {
+  id?: string;
   name: string;
   age: string;
   breed?: string;
@@ -20,6 +21,7 @@ export interface BCSResult {
 
 export interface PainHistoryRecord {
   id: string;
+  catId?: string;
   date: number;
   type: "pain";
   photoUrl?: string;
@@ -29,6 +31,7 @@ export interface PainHistoryRecord {
 
 export interface BCSHistoryRecord {
   id: string;
+  catId?: string;
   date: number;
   type: "bcs";
   photoUrl?: string;

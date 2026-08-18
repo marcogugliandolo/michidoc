@@ -1,19 +1,32 @@
 import { useState } from 'react';
 import { ArrowLeft, Activity, Scale, History as HistoryIcon, PawPrint, Cat } from 'lucide-react';
-import { HistoryRecord, BCSHistoryRecord, PainHistoryRecord } from '../types';
+import { HistoryRecord, BCSHistoryRecord, PainHistoryRecord, CatProfile } from '../types';
 import { cn } from './ui';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { motion } from 'motion/react';
 
-export function History({ onBack, records }: { onBack: () => void, records: HistoryRecord[] }) {
-  const [filter, setFilter] = useState<'all' | 'pain' | 'bcs'>('all');
+interface HistoryProps {
+  onBack: () => void;
+  records: HistoryRecord[];
+  profiles?: CatProfile[];
+  activeProfile?: CatProfile;
+}
 
-  const filteredRecords = records.filter(r => {
+export function History({ onBack, records, profiles = [], activeProfile }: HistoryProps) {
+  const [filter, setFilter] = useState<'all' | 'pain' | 'bcs'>('all');
+  const [selectedCatId, setSelectedCatId] = useState<string>('all');
+
+  const catFilteredRecords = records.filter(r => {
+    if (selectedCatId === 'all') return true;
+    return r.catId === selectedCatId || (!r.catId && activeProfile && activeProfile.id === selectedCatId);
+  });
+
+  const filteredRecords = catFilteredRecords.filter(r => {
     if (filter === 'all') return true;
     return r.type === filter;
   });
 
-  const bcsData = (records.filter((r): r is BCSHistoryRecord => r.type === 'bcs' && r.result?.score !== undefined))
+  const bcsData = (catFilteredRecords.filter((r): r is BCSHistoryRecord => r.type === 'bcs' && r.result?.score !== undefined))
     .sort((a, b) => a.date - b.date)
     .map(r => ({
       date: new Date(r.date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' }),
@@ -21,8 +34,8 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
       status: r.result.status
     }));
 
-  const painRecords = records.filter((r): r is PainHistoryRecord => r.type === 'pain');
-  const bcsRecords = records.filter((r): r is BCSHistoryRecord => r.type === 'bcs');
+  const painRecords = catFilteredRecords.filter((r): r is PainHistoryRecord => r.type === 'pain');
+  const bcsRecords = catFilteredRecords.filter((r): r is BCSHistoryRecord => r.type === 'bcs');
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('es-ES', {
@@ -31,6 +44,11 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getCatForRecord = (catId?: string) => {
+    if (!catId) return activeProfile;
+    return profiles.find(p => p.id === catId) || activeProfile;
   };
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -72,7 +90,7 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack} 
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors shadow-sm cursor-pointer"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors shadow-xs cursor-pointer"
           >
             <ArrowLeft size={20} />
           </button>
@@ -87,24 +105,24 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
         </div>
 
         {/* Minimalist Filter Pills */}
-        <div className="flex items-center gap-2 p-1.5 bg-neutral-100/50 dark:bg-[#121212] rounded-full border border-neutral-200/60 dark:border-neutral-800/60 self-start sm:self-auto text-[13px] font-medium shadow-sm">
+        <div className="flex items-center gap-2 p-1.5 bg-neutral-100/50 dark:bg-[#121212] rounded-full border border-neutral-200/60 dark:border-neutral-800/60 self-start sm:self-auto text-[13px] font-medium shadow-xs">
           <button
             onClick={() => setFilter('all')}
             className={cn(
               "px-4 py-2 rounded-full transition-all cursor-pointer",
               filter === 'all'
-                ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-sm"
+                ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-xs"
                 : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
             )}
           >
-            Todos ({records.length})
+            Todos ({catFilteredRecords.length})
           </button>
           <button
             onClick={() => setFilter('pain')}
             className={cn(
               "px-4 py-2 rounded-full transition-all flex items-center gap-1.5 cursor-pointer",
               filter === 'pain'
-                ? "bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm"
+                ? "bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-xs"
                 : "text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400"
             )}
           >
@@ -115,7 +133,7 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
             className={cn(
               "px-4 py-2 rounded-full transition-all flex items-center gap-1.5 cursor-pointer",
               filter === 'bcs'
-                ? "bg-white dark:bg-neutral-800 text-blue-600 dark:text-blue-400 shadow-sm"
+                ? "bg-white dark:bg-neutral-800 text-blue-600 dark:text-blue-400 shadow-xs"
                 : "text-neutral-500 hover:text-blue-600 dark:hover:text-blue-400"
             )}
           >
@@ -124,253 +142,185 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
         </div>
       </motion.div>
 
+      {/* Cat Filter Chips (if user has multiple cats) */}
+      {profiles.length > 1 && (
+        <motion.div variants={itemVariants} className="flex items-center gap-2 overflow-x-auto pb-1">
+          <span className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider shrink-0 mr-1">
+            Michi:
+          </span>
+          <button
+            onClick={() => setSelectedCatId('all')}
+            className={cn(
+              "text-[12px] font-medium px-3 py-1.5 rounded-full border transition-all shrink-0 cursor-pointer",
+              selectedCatId === 'all'
+                ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-neutral-900 dark:border-white shadow-xs"
+                : "bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-800 hover:border-neutral-400"
+            )}
+          >
+            Todos ({records.length})
+          </button>
+          {profiles.map(cat => (
+            <button
+              key={cat.id || cat.name}
+              onClick={() => setSelectedCatId(cat.id || '')}
+              className={cn(
+                "flex items-center gap-1.5 text-[12px] font-medium px-3 py-1.5 rounded-full border transition-all shrink-0 cursor-pointer",
+                selectedCatId === cat.id
+                  ? "bg-orange-500 text-white border-orange-500 shadow-xs"
+                  : "bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-800 hover:border-neutral-400"
+              )}
+            >
+              <img src={cat.photoUrl} alt={cat.name} className="w-4 h-4 rounded-full object-cover" />
+              <span>{cat.name}</span>
+            </button>
+          ))}
+        </motion.div>
+      )}
+
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Left Column: Timeline */}
         <div className="lg:col-span-7 space-y-4">
           {filteredRecords.length === 0 ? (
-            <motion.div variants={itemVariants} className="text-center py-20 bg-white dark:bg-[#121212] rounded-[28px] border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm">
+            <motion.div variants={itemVariants} className="text-center py-20 bg-white dark:bg-[#121212] rounded-[28px] border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs">
               <div className="relative flex justify-center items-center mx-auto mb-6 w-16 h-16">
                 <Cat size={64} strokeWidth={1} className="text-neutral-300 dark:text-neutral-700" />
-                <motion.div 
-                  animate={{ opacity: [0, 1, 0], y: [0, -10, -20], x: [0, 5, 10] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                  className="absolute -top-2 -right-4 font-bold text-neutral-400 text-lg"
-                >
-                  Zzz
-                </motion.div>
               </div>
-              <h3 className="font-semibold text-neutral-900 dark:text-white text-[16px] mb-2">
-                Miau... aún no hay registros
+              <h3 className="text-[17px] font-bold text-neutral-900 dark:text-white mb-2">
+                Sin evaluaciones registradas
               </h3>
-              <p className="text-[14px] text-neutral-500 max-w-xs mx-auto">
-                {filter === 'all' 
-                  ? 'Realiza el primer chequeo para comenzar el seguimiento.' 
-                  : 'No hay chequeos en esta categoría todavía.'}
+              <p className="text-[14px] text-neutral-500 dark:text-neutral-400 max-w-sm mx-auto mb-6">
+                Realiza un chequeo de dolor o peso para comenzar a registrar la evolución médica.
               </p>
+              <button 
+                onClick={onBack}
+                className="px-5 py-2.5 rounded-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[14px] font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+              >
+                Hacer chequeo ahora
+              </button>
             </motion.div>
           ) : (
-            <div className="relative border-l-2 border-neutral-200/60 dark:border-neutral-800 ml-4 sm:ml-6 space-y-6 pt-2">
-              {filteredRecords.map((record) => {
-                const isPain = record.type === 'pain';
-                
-                return (
-                  <motion.div variants={itemVariants} key={record.id} className="relative pl-6 sm:pl-8">
-                    {/* Timeline Paw Print Dot */}
-                    <div className={cn(
-                      "absolute -left-[15px] top-6 w-7 h-7 rounded-full border-[3px] border-[#faf8f5] dark:border-[#0a0a0a] flex items-center justify-center",
-                      isPain 
-                        ? "bg-orange-500 text-white" 
-                        : "bg-blue-500 text-white"
-                    )}>
-                       <PawPrint size={12} strokeWidth={3} />
-                    </div>
-
-                    <div className="rounded-[24px] bg-white dark:bg-[#121212] p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-shadow group">
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-neutral-100 dark:border-neutral-800/80">
-                        <div className="flex items-center gap-2.5">
-                          <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center",
-                            isPain ? "bg-orange-50/50 dark:bg-orange-900/20 text-orange-500" : "bg-blue-50/50 dark:bg-blue-900/20 text-blue-500"
-                          )}>
-                            {isPain ? <Activity size={16} /> : <Scale size={16} />}
-                          </div>
-                          <span className="font-semibold text-[15px] text-neutral-900 dark:text-white">
-                            {isPain ? 'Chequeo de Dolor' : 'Condición Corporal'}
-                          </span>
-                        </div>
-                        <span className="text-[12px] font-medium text-neutral-500">
-                          {formatDate(record.date)}
-                        </span>
+            filteredRecords.map((record) => {
+              const cat = getCatForRecord(record.catId);
+              return (
+                <motion.div 
+                  key={record.id}
+                  variants={itemVariants}
+                  className="bg-white dark:bg-[#121212] rounded-[28px] p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
+                        record.type === 'pain' ? "bg-orange-50 dark:bg-orange-950/30 text-orange-500" : "bg-blue-50 dark:bg-blue-950/30 text-blue-500"
+                      )}>
+                        {record.type === 'pain' ? <Activity size={20} /> : <Scale size={20} />}
                       </div>
-
-                      {record.type === 'pain' ? (
-                        <div className="space-y-4">
-                          <div className="flex items-start gap-4">
-                            {record.photoUrl && (
-                              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[16px] overflow-hidden shrink-0 border border-neutral-200/80 dark:border-neutral-700/80">
-                                <img 
-                                  src={record.photoUrl} 
-                                  alt="Rostro" 
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                              </div>
-                            )}
-                            <div className="space-y-2 flex-1">
-                              <div>
-                                <span className={cn(
-                                  "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider",
-                                  record.result.level === 'Ninguno' && "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
-                                  record.result.level === 'Leve' && "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
-                                  record.result.level === 'Moderado' && "bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
-                                  record.result.level === 'Alto' && "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400",
-                                )}>
-                                  Nivel: {record.result.level}
-                                </span>
-                              </div>
-                              <p className="text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-3">
-                                {record.result.explanation}
-                              </p>
-                            </div>
-                          </div>
-                          {record.result.recommendation && (
-                            <div className="p-3.5 bg-neutral-50/50 dark:bg-neutral-800/40 rounded-[16px] text-[13px] text-neutral-700 dark:text-neutral-300 font-medium border border-neutral-200/50 dark:border-neutral-700/50">
-                              <strong className="text-neutral-900 dark:text-white">Consejo:</strong> {record.result.recommendation}
-                            </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-[16px] font-bold text-neutral-900 dark:text-white leading-tight">
+                            {record.type === 'pain' ? 'Evaluación de Dolor' : 'Evaluación Corporal'}
+                          </h4>
+                          {cat && profiles.length > 1 && (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full">
+                              <img src={cat.photoUrl} alt="" className="w-3 h-3 rounded-full object-cover" />
+                              {cat.name}
+                            </span>
                           )}
                         </div>
+                        <p className="text-[13px] text-neutral-400 mt-0.5">{formatDate(record.date)}</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      {record.type === 'pain' ? (
+                        <span className={cn(
+                          "px-3 py-1 rounded-full text-[12px] font-bold",
+                          record.result.level === 'Ninguno' && "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400",
+                          record.result.level === 'Leve' && "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400",
+                          record.result.level === 'Moderado' && "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400",
+                          record.result.level === 'Alto' && "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400"
+                        )}>
+                          Nivel {record.result.level}
+                        </span>
                       ) : (
-                        <div className="space-y-4">
-                          <div className="flex items-start gap-4">
-                            <div className="flex gap-2 shrink-0">
-                              {record.photoUrl && (
-                                <div className="w-14 h-20 sm:w-16 sm:h-24 rounded-[12px] overflow-hidden border border-neutral-200/80 dark:border-neutral-700/80">
-                                  <img src={record.photoUrl} alt="Lomo" className="w-full h-full object-cover" />
-                                </div>
-                              )}
-                              {record.photoUrl2 && (
-                                <div className="w-14 h-20 sm:w-16 sm:h-24 rounded-[12px] overflow-hidden border border-neutral-200/80 dark:border-neutral-700/80">
-                                  <img src={record.photoUrl2} alt="Perfil" className="w-full h-full object-cover" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="space-y-2 flex-1">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className={cn(
-                                  "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider",
-                                  record.result.status === 'Peso ideal' && "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
-                                  record.result.status === 'Bajo peso' && "bg-sky-50 text-sky-700 dark:bg-sky-900/20 dark:text-sky-400",
-                                  record.result.status === 'Sobrepeso' && "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
-                                  record.result.status === 'Obesidad' && "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400",
-                                )}>
-                                  {record.result.status}
-                                </span>
-                                <span className="text-[12px] font-bold text-neutral-500">
-                                  Score: {record.result.score}/9
-                                </span>
-                              </div>
-                              <p className="text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-3">
-                                {record.result.explanation}
-                              </p>
-                            </div>
-                          </div>
-                          {record.result.recommendation && (
-                            <div className="p-3.5 bg-neutral-50/50 dark:bg-neutral-800/40 rounded-[16px] text-[13px] text-neutral-700 dark:text-neutral-300 font-medium border border-neutral-200/50 dark:border-neutral-700/50">
-                              <strong className="text-neutral-900 dark:text-white">Ración recomendada:</strong> {record.result.recommendation}
-                            </div>
-                          )}
+                        <span className={cn(
+                          "px-3 py-1 rounded-full text-[12px] font-bold",
+                          record.result.score === 5 && "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400",
+                          (record.result.score === 4 || record.result.score === 6) && "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400",
+                          (record.result.score < 4 || record.result.score > 6) && "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400"
+                        )}>
+                          BCS {record.result.score}/9 • {record.result.status}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Photo Thumbnails */}
+                  {(record.photoUrl || record.photoUrl2) && (
+                    <div className="flex gap-2 pt-1">
+                      {record.photoUrl && (
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-neutral-100 dark:border-neutral-800">
+                          <img src={record.photoUrl} alt="Foto de evaluación" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      {record.photoUrl2 && (
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-neutral-100 dark:border-neutral-800">
+                          <img src={record.photoUrl2} alt="Foto lateral" className="w-full h-full object-cover" />
                         </div>
                       )}
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                  )}
+
+                  {/* Explanation & Recommendation */}
+                  <div className="space-y-2 text-[14px] bg-neutral-50/50 dark:bg-neutral-900/30 p-4 rounded-2xl border border-neutral-100 dark:border-neutral-800/60">
+                    <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                      {record.result.explanation}
+                    </p>
+                    <p className="text-neutral-500 dark:text-neutral-400 text-[13px] leading-relaxed pt-1 border-t border-neutral-200/40 dark:border-neutral-800/40">
+                      <span className="font-semibold text-neutral-700 dark:text-neutral-300">Recomendación:</span> {record.result.recommendation}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })
           )}
         </div>
 
-        {/* Right Column: Chart & Stats */}
-        <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
-          
-          {/* Chart Card */}
-          {bcsData.length >= 2 ? (
-            <motion.div variants={itemVariants}>
-              <div className="rounded-[28px] bg-white dark:bg-[#121212] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-[15px] font-bold text-neutral-900 dark:text-white">
-                    Curva de Condición
-                  </h3>
-                  <span className="text-[11px] font-semibold text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-3 py-1 rounded-full">
-                    Escala 1-9
-                  </span>
-                </div>
-                <div className="h-48 w-full -ml-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={bcsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="4 4" stroke="currentColor" className="text-neutral-100 dark:text-neutral-800" vertical={false} />
-                      <XAxis 
-                        dataKey="date" 
-                        tick={{ fontSize: 11, fill: '#888' }} 
-                        axisLine={false} 
-                        tickLine={false}
-                        dy={10}
-                      />
-                      <YAxis 
-                        domain={[1, 9]} 
-                        ticks={[1, 3, 5, 7, 9]} 
-                        tick={{ fontSize: 11, fill: '#888' }} 
-                        axisLine={false} 
-                        tickLine={false}
-                        dx={-10}
-                      />
-                      <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#888', strokeWidth: 1, strokeDasharray: '4 4' }} />
-                      <Line 
-                        type="monotone" 
-                        dataKey="score" 
-                        stroke="#3b82f6" 
-                        strokeWidth={3}
-                        dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: 'var(--bg-color, #fff)' }}
-                        activeDot={{ r: 6, fill: '#3b82f6', stroke: 'var(--bg-color, #fff)', strokeWidth: 2 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <p className="text-[12px] text-neutral-500 text-center mt-4">
-                  El score 5/9 representa el peso óptimo.
-                </p>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div variants={itemVariants}>
-              <div className="rounded-[28px] p-8 bg-neutral-50/50 dark:bg-[#121212] border border-neutral-200/50 dark:border-neutral-800/80 text-center shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-white dark:bg-neutral-800 border border-neutral-200/50 dark:border-neutral-700/50 flex items-center justify-center mx-auto mb-4">
-                  <Scale size={20} className="text-neutral-400" />
-                </div>
-                <h4 className="font-semibold text-[14px] text-neutral-900 dark:text-white mb-2">
-                  Gráfica de evolución
-                </h4>
-                <p className="text-[13px] text-neutral-500 max-w-xs mx-auto">
-                  Guarda al menos 2 evaluaciones de figura para ver su tendencia en el tiempo.
-                </p>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Quick Metrics */}
-          <motion.div variants={itemVariants}>
-            <div className="rounded-[28px] bg-white dark:bg-[#121212] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm space-y-4">
-              <h4 className="font-bold text-[14px] text-neutral-900 dark:text-white">
-                Resumen de Evaluaciones
-              </h4>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Activity size={14} className="text-orange-500" />
-                    <span className="text-[12px] font-semibold text-neutral-600 dark:text-neutral-400">
-                      Dolor
-                    </span>
-                  </div>
-                  <span className="text-[28px] font-bold text-neutral-900 dark:text-white">
-                    {painRecords.length}
-                  </span>
-                </div>
-                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Scale size={14} className="text-blue-500" />
-                    <span className="text-[12px] font-semibold text-neutral-600 dark:text-neutral-400">
-                      Peso
-                    </span>
-                  </div>
-                  <span className="text-[28px] font-bold text-neutral-900 dark:text-white">
-                    {bcsRecords.length}
-                  </span>
-                </div>
-              </div>
+        {/* Right Column: BCS Chart */}
+        <div className="lg:col-span-5 space-y-6">
+          <motion.div variants={itemVariants} className="bg-white dark:bg-[#121212] rounded-[28px] p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-4">
+            <div>
+              <h3 className="text-[17px] font-bold text-neutral-900 dark:text-white">
+                Curva de Condición Corporal
+              </h3>
+              <p className="text-[13px] text-neutral-400">
+                Evolución del Score BCS (Escala 1 al 9)
+              </p>
             </div>
+
+            {bcsData.length > 0 ? (
+              <div className="h-[220px] w-full pt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={bcsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888820" />
+                    <XAxis dataKey="date" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                    <YAxis domain={[1, 9]} ticks={[1, 3, 5, 7, 9]} stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: '#3b82f6' }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-neutral-50 dark:bg-neutral-900/30 rounded-2xl">
+                <Scale className="w-8 h-8 text-neutral-300 dark:text-neutral-700 mx-auto mb-2" />
+                <p className="text-[13px] text-neutral-400">Sin datos de peso suficientes</p>
+              </div>
+            )}
           </motion.div>
-
         </div>
+
       </div>
     </motion.div>
   );

@@ -6,12 +6,12 @@ export function WavingCat({ className }: { className?: string }) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 170 130" 
+      viewBox="0 0 170 140" 
       className={cn("block select-none overflow-visible", className)}
     >
       <defs>
         <filter id="catShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#9a3412" floodOpacity="0.15" />
+          <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#9a3412" floodOpacity="0.12" />
         </filter>
         
         <linearGradient id="gingerFur" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -25,40 +25,58 @@ export function WavingCat({ className }: { className?: string }) {
         </linearGradient>
       </defs>
 
-      {/* Gentle Floating & Breathing Animation for the entire character */}
-      <motion.g 
-        filter="url(#catShadow)"
-        animate={{ y: [0, -2.5, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      >
-        {/* === BODY / TORSO (Solid chest going all the way down behind card) === */}
+      {/* Main Character Group */}
+      <g filter="url(#catShadow)">
+        
+        {/* === BODY / CHEST (Deep fill with NO horizontal bottom cut stroke) === */}
+        {/* Chest Fill */}
         <path 
-          d="M 46 72 C 40 92, 38 112, 36 130 L 134 130 C 132 112, 130 92, 124 72 Z" 
+          d="M 44 72 C 38 90, 36 112, 34 140 L 136 140 C 134 112, 132 90, 126 72 Z" 
           fill="url(#creamFur)" 
+        />
+        {/* Left body contour stroke (open bottom) */}
+        <path 
+          d="M 44 72 C 38 90, 36 112, 34 140" 
+          fill="none" 
           stroke="#EA580C" 
           strokeWidth="2.5" 
+          strokeLinecap="round" 
+        />
+        {/* Right body contour stroke (open bottom) */}
+        <path 
+          d="M 126 72 C 132 90, 134 112, 136 140" 
+          fill="none" 
+          stroke="#EA580C" 
+          strokeWidth="2.5" 
+          strokeLinecap="round" 
         />
 
-        {/* === RIGHT ARM & PAW (Seamless full arm extending from below the card) === */}
+        {/* === RIGHT ARM & WAVING PAW === */}
         <motion.g 
-          style={{ transformOrigin: "126px 118px" }}
+          style={{ transformOrigin: "128px 125px" }}
           animate={{ 
-            rotate: [0, 18, -6, 18, -6, 0],
+            rotate: [0, 16, -4, 16, -4, 0],
             y: [0, -2, 0, -2, 0, 0]
           }}
           transition={{ 
-            duration: 1.5, 
+            duration: 1.6, 
             repeat: Infinity, 
             ease: "easeInOut", 
-            repeatDelay: 0.8 
+            repeatDelay: 0.7 
           }}
         >
-          {/* Continuous Arm Path: Drawn from bottom left (116, 130) up to paw and back down to (138, 130) */}
+          {/* Arm Fill extending down */}
           <path 
-            d="M 116 130 L 118 84 C 120 62, 126 45, 138 42 C 150 39, 158 50, 154 66 C 148 84, 142 108, 138 130 Z" 
+            d="M 116 140 L 118 84 C 120 62, 126 45, 138 42 C 150 39, 158 50, 154 66 C 148 84, 142 110, 138 140 Z" 
             fill="url(#gingerFur)" 
+          />
+          {/* Arm Left Stroke */}
+          <path 
+            d="M 116 140 L 118 84 C 120 62, 126 45, 138 42 C 150 39, 158 50, 154 66 C 148 84, 142 110, 138 140" 
+            fill="none" 
             stroke="#EA580C" 
             strokeWidth="2.5" 
+            strokeLinecap="round" 
             strokeLinejoin="round" 
           />
 
@@ -92,7 +110,7 @@ export function WavingCat({ className }: { className?: string }) {
           <path 
             d="M 47 43 C 42 32, 46 22, 55 25 C 60 29, 63 36, 64 42 Z" 
             fill="#FDA4AF" 
-            opacity="0.85"
+            opacity="0.85" 
           />
         </motion.g>
 
@@ -112,7 +130,7 @@ export function WavingCat({ className }: { className?: string }) {
           <path 
             d="M 123 43 C 128 32, 124 22, 115 25 C 110 29, 107 36, 106 42 Z" 
             fill="#FDA4AF" 
-            opacity="0.85"
+            opacity="0.85" 
           />
         </motion.g>
 
@@ -192,11 +210,11 @@ export function WavingCat({ className }: { className?: string }) {
 
         {/* === LEFT PAW (Resting softly on top of the card ledge) === */}
         <g>
-          <ellipse cx="55" cy="95" rx="12" ry="9" fill="#FFF7ED" stroke="#EA580C" strokeWidth="2.2" />
-          <line x1="51" y1="91" x2="51" y2="98" stroke="#FDBA74" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="59" y1="91" x2="59" y2="98" stroke="#FDBA74" strokeWidth="1.8" strokeLinecap="round" />
+          <ellipse cx="55" cy="94" rx="11" ry="8.5" fill="#FFF7ED" stroke="#EA580C" strokeWidth="2.2" />
+          <line x1="51" y1="90" x2="51" y2="97" stroke="#FDBA74" strokeWidth="1.6" strokeLinecap="round" />
+          <line x1="59" y1="90" x2="59" y2="97" stroke="#FDBA74" strokeWidth="1.6" strokeLinecap="round" />
         </g>
-      </motion.g>
+      </g>
     </svg>
   );
 }
