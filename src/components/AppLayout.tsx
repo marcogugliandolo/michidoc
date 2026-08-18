@@ -122,11 +122,6 @@ export function AppLayout({
                 </div>
               </button>
 
-              <div className="relative flex items-center justify-center w-4 mx-1">
-                <div className="w-px h-6 bg-neutral-200 dark:bg-neutral-800" />
-                <PawPrint className="absolute text-neutral-300 dark:text-neutral-700 w-3 h-3 rotate-45" />
-              </div>
-
               <button
                 onClick={onReset}
                 className="p-2 rounded-full text-neutral-400 hover:text-rose-500 transition-colors cursor-pointer"
@@ -144,18 +139,6 @@ export function AppLayout({
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 relative z-10">
         {children}
       </main>
-
-      {/* Global Peeking Cat - Desktop Only */}
-      <div className="hidden lg:block fixed bottom-0 right-16 z-0 pointer-events-none">
-        <div className="w-28 h-14 overflow-hidden relative">
-           <motion.div
-             animate={{ y: [30, 8, 30] }}
-             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-           >
-             <Logo className="w-28 h-28 absolute top-0 left-0 drop-shadow-md opacity-50 dark:opacity-20 grayscale transition-all hover:grayscale-0 hover:opacity-100 cursor-pointer pointer-events-auto" />
-           </motion.div>
-        </div>
-      </div>
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#faf8f5]/90 dark:bg-[#0a0a0a]/90 backdrop-blur-xl border-t border-neutral-200/60 dark:border-neutral-800/60 pb-[env(safe-area-inset-bottom)]">
