@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './ui';
 import { Logo } from './Logo';
+import { WavingCat } from './WavingCat';
 import { setAuthState } from '../db';
 import { ThemeToggle } from './ThemeToggle';
 import { User, Lock, Eye, EyeOff, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -96,16 +97,17 @@ export function Login({ onLogin }: { onLogin: () => void }) {
         initial={{ opacity: 0, y: 20, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-[420px] z-10 mt-10"
+        className="relative w-full max-w-[420px] z-10 mt-14 sm:mt-10"
       >
-        {/* Peeking Cat over the card */}
-        <div className="absolute -top-11 left-1/2 -translate-x-1/2 w-24 h-12 overflow-hidden flex justify-center z-[-1]">
+        {/* Waving Cat Peeking over the card */}
+        <div className="absolute -top-[70px] sm:-top-[76px] left-1/2 -translate-x-1/2 w-[140px] sm:w-[155px] flex justify-center z-[-1] pointer-events-none">
           <motion.div
-            animate={{ y: [16, 2, 16] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.2, type: "spring", stiffness: 120, damping: 14 }}
             className="w-full flex justify-center"
           >
-            <Logo className="w-20 h-20 -mt-1 drop-shadow-md" />
+            <WavingCat className="w-[130px] sm:w-[145px]" />
           </motion.div>
         </div>
 
