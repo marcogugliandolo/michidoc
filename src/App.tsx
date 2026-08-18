@@ -129,8 +129,6 @@ export default function App() {
                 profile={profile} 
                 records={history}
                 onNavigate={setCurrentView} 
-                onReset={() => setIsLogoutModalOpen(true)} 
-                onEditProfile={() => setIsEditProfileOpen(true)}
               />
             )}
             {currentView === 'pain' && (

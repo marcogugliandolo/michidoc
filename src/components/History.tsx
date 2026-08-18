@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ArrowLeft, Calendar, HeartPulse, Scale, Activity, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Activity, Scale, History as HistoryIcon } from 'lucide-react';
 import { HistoryRecord, BCSHistoryRecord, PainHistoryRecord } from '../types';
-import { Card, cn } from './ui';
+import { cn } from './ui';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { motion } from 'motion/react';
 
@@ -37,10 +37,10 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white dark:bg-neutral-800 p-3 rounded-2xl shadow-lg border-2 border-emerald-100 dark:border-neutral-700 text-xs">
-          <p className="font-bold text-gray-800 dark:text-gray-100">{label}</p>
-          <p className="text-emerald-600 dark:text-emerald-400 font-black mt-1">Score: {data.score}/9</p>
-          <p className="text-gray-500 dark:text-gray-400">{data.status}</p>
+        <div className="bg-white dark:bg-[#121212] p-4 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.3)] border border-neutral-100 dark:border-neutral-800 text-[13px]">
+          <p className="font-semibold text-neutral-900 dark:text-white mb-1">{label}</p>
+          <p className="text-blue-600 dark:text-blue-400 font-bold">Score: {data.score}/9</p>
+          <p className="text-neutral-500 dark:text-neutral-400">{data.status}</p>
         </div>
       );
     }
@@ -65,193 +65,188 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="max-w-6xl mx-auto space-y-6 pb-24 md:pb-12"
+      className="max-w-6xl mx-auto space-y-6"
     >
-      {/* Friendly Header with Back & Filters */}
-      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      {/* Sleek Header with Back & Filters */}
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+        <div className="flex items-center gap-4">
           <button 
             onClick={onBack} 
-            className="p-2.5 -ml-2 rounded-2xl bg-orange-100/60 hover:bg-orange-200/70 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-orange-800 dark:text-orange-300 transition-colors cursor-pointer"
-            title="Volver a Mi Casita"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors shadow-sm cursor-pointer"
           >
-            <ArrowLeft size={22} />
+            <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-orange-950 dark:text-orange-200 tracking-tight flex items-center gap-2">
-              <span>🐾</span>
-              <span>Álbum Clínico & Evolución</span>
+            <h1 className="text-[22px] sm:text-[26px] font-bold text-neutral-900 dark:text-white tracking-tight">
+              Historial Clínico
             </h1>
-            <p className="text-xs sm:text-sm text-orange-800/80 dark:text-orange-400 font-medium">
-              El diario de chequeos, fotitos y evolución corporal de tu michi
+            <p className="text-[14px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+              Evolución y seguimiento
             </p>
           </div>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 p-1.5 bg-orange-100/60 dark:bg-neutral-800 rounded-full border border-orange-200 dark:border-neutral-700 self-start sm:self-auto text-xs font-bold shadow-2xs">
+        {/* Minimalist Filter Pills */}
+        <div className="flex items-center gap-2 p-1.5 bg-neutral-100/50 dark:bg-[#121212] rounded-full border border-neutral-200/60 dark:border-neutral-800/60 self-start sm:self-auto text-[13px] font-medium shadow-sm">
           <button
             onClick={() => setFilter('all')}
             className={cn(
-              "px-3.5 py-1.5 rounded-full transition-all cursor-pointer",
+              "px-4 py-2 rounded-full transition-all cursor-pointer",
               filter === 'all'
-                ? "bg-white dark:bg-neutral-900 text-orange-950 dark:text-orange-100 shadow-xs font-black"
-                : "text-orange-900/70 dark:text-orange-300/70 hover:text-orange-950 dark:hover:text-orange-100"
+                ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-sm"
+                : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
             )}
           >
-            🐾 Todos ({records.length})
+            Todos ({records.length})
           </button>
           <button
             onClick={() => setFilter('pain')}
             className={cn(
-              "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1 cursor-pointer",
+              "px-4 py-2 rounded-full transition-all flex items-center gap-1.5 cursor-pointer",
               filter === 'pain'
-                ? "bg-white dark:bg-neutral-900 text-rose-700 dark:text-rose-400 shadow-xs font-black"
-                : "text-orange-900/70 dark:text-orange-300/70 hover:text-rose-700 dark:hover:text-rose-400"
+                ? "bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm"
+                : "text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400"
             )}
           >
-            🐱 Dolor ({painRecords.length})
+            <Activity size={14} /> Dolor ({painRecords.length})
           </button>
           <button
             onClick={() => setFilter('bcs')}
             className={cn(
-              "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1 cursor-pointer",
+              "px-4 py-2 rounded-full transition-all flex items-center gap-1.5 cursor-pointer",
               filter === 'bcs'
-                ? "bg-white dark:bg-neutral-900 text-emerald-700 dark:text-emerald-400 shadow-xs font-black"
-                : "text-orange-900/70 dark:text-orange-300/70 hover:text-emerald-700 dark:hover:text-emerald-400"
+                ? "bg-white dark:bg-neutral-800 text-blue-600 dark:text-blue-400 shadow-sm"
+                : "text-neutral-500 hover:text-blue-600 dark:hover:text-blue-400"
             )}
           >
-            ⚖️ Pancita ({bcsRecords.length})
+            <Scale size={14} /> Peso ({bcsRecords.length})
           </button>
         </div>
       </motion.div>
 
-      {/* Main Grid: Left Column Timeline (7 cols) + Right Column Chart & Stats (5 cols) */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Left Column: Timeline */}
-        <div className="lg:col-span-7 space-y-5">
+        <div className="lg:col-span-7 space-y-4">
           {filteredRecords.length === 0 ? (
-            <motion.div variants={itemVariants} className="text-center py-16 text-gray-400 dark:text-gray-500 bg-white dark:bg-neutral-900 rounded-3xl p-8 border-2 border-orange-100/70 dark:border-neutral-800">
-              <span className="text-5xl block mb-3 opacity-60">🐾</span>
-              <h3 className="font-black text-gray-800 dark:text-gray-200 text-base mb-1">
-                Aún no hay chequeos guardados
+            <motion.div variants={itemVariants} className="text-center py-20 bg-white dark:bg-[#121212] rounded-[28px] border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm">
+              <HistoryIcon size={48} strokeWidth={1} className="mx-auto mb-4 text-neutral-300 dark:text-neutral-700" />
+              <h3 className="font-semibold text-neutral-900 dark:text-white text-[16px] mb-2">
+                Aún no hay registros
               </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto font-medium">
+              <p className="text-[14px] text-neutral-500 max-w-xs mx-auto">
                 {filter === 'all' 
-                  ? 'Realiza tu primer chequeo de dolor o condición corporal para comenzar este lindo diario.' 
+                  ? 'Realiza el primer chequeo para comenzar el seguimiento.' 
                   : 'No hay chequeos en esta categoría todavía.'}
               </p>
             </motion.div>
           ) : (
-            <div className="relative border-l-2 border-orange-200 dark:border-neutral-800 ml-4 sm:ml-6 space-y-6">
+            <div className="relative border-l-2 border-neutral-200/60 dark:border-neutral-800 ml-4 sm:ml-6 space-y-6 pt-2">
               {filteredRecords.map((record) => {
                 const isPain = record.type === 'pain';
                 
                 return (
                   <motion.div variants={itemVariants} key={record.id} className="relative pl-6 sm:pl-8">
-                    {/* Paw Timeline Dot */}
+                    {/* Timeline Dot */}
                     <div className={cn(
-                      "absolute -left-[14px] top-4 w-7 h-7 rounded-full border-2 border-[#fff9f3] dark:border-neutral-950 flex items-center justify-center text-xs shadow-xs",
+                      "absolute -left-[9px] top-5 w-4 h-4 rounded-full border-2 border-[#faf8f5] dark:border-[#0a0a0a]",
                       isPain 
-                        ? "bg-rose-100 text-rose-600 dark:bg-rose-950 dark:text-rose-300" 
-                        : "bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300"
-                    )}>
-                      🐾
-                    </div>
+                        ? "bg-orange-500" 
+                        : "bg-blue-500"
+                    )} />
 
-                    <div className="rounded-3xl bg-white dark:bg-neutral-900 p-5 sm:p-6 border-2 border-orange-100/70 dark:border-neutral-800 shadow-xs hover:shadow-md transition-shadow">
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100 dark:border-neutral-800">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{isPain ? '🐱' : '⚖️'}</span>
-                          <span className="font-black text-sm sm:text-base text-gray-900 dark:text-gray-100">
-                            {isPain ? 'Chequeo de Dolor Facial' : 'Condición de Pancita (BCS)'}
+                    <div className="rounded-[24px] bg-white dark:bg-[#121212] p-6 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm hover:shadow-md transition-shadow group">
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-neutral-100 dark:border-neutral-800/80">
+                        <div className="flex items-center gap-2.5">
+                          <div className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center",
+                            isPain ? "bg-orange-50/50 dark:bg-orange-900/20 text-orange-500" : "bg-blue-50/50 dark:bg-blue-900/20 text-blue-500"
+                          )}>
+                            {isPain ? <Activity size={16} /> : <Scale size={16} />}
+                          </div>
+                          <span className="font-semibold text-[15px] text-neutral-900 dark:text-white">
+                            {isPain ? 'Chequeo de Dolor' : 'Condición Corporal'}
                           </span>
                         </div>
-                        <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500">
+                        <span className="text-[12px] font-medium text-neutral-500">
                           {formatDate(record.date)}
                         </span>
                       </div>
 
                       {record.type === 'pain' ? (
-                        <div className="space-y-3">
-                          <div className="flex items-start gap-3.5">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
                             {record.photoUrl && (
-                              <img 
-                                src={record.photoUrl} 
-                                alt="Foto" 
-                                className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl object-cover border border-orange-200 dark:border-neutral-700 shrink-0 shadow-2xs"
-                              />
+                              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[16px] overflow-hidden shrink-0 border border-neutral-200/80 dark:border-neutral-700/80">
+                                <img 
+                                  src={record.photoUrl} 
+                                  alt="Rostro" 
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                              </div>
                             )}
-                            <div className="space-y-1 flex-1">
-                              <span className="text-[11px] text-gray-500 dark:text-neutral-400 font-bold uppercase">Resultado:</span>
+                            <div className="space-y-2 flex-1">
                               <div>
                                 <span className={cn(
-                                  "inline-block px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider",
-                                  record.result.level === 'Ninguno' && "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border dark:border-emerald-800/40",
-                                  record.result.level === 'Leve' && "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border dark:border-amber-800/40",
-                                  record.result.level === 'Moderado' && "bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300 dark:border dark:border-orange-800/40",
-                                  record.result.level === 'Alto' && "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 dark:border dark:border-rose-800/40",
+                                  "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider",
+                                  record.result.level === 'Ninguno' && "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
+                                  record.result.level === 'Leve' && "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
+                                  record.result.level === 'Moderado' && "bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
+                                  record.result.level === 'Alto' && "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400",
                                 )}>
-                                  Nivel {record.result.level}
+                                  Nivel: {record.result.level}
                                 </span>
                               </div>
-                              <p className="text-xs text-gray-600 dark:text-neutral-300 mt-1 font-medium line-clamp-2">
+                              <p className="text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-3">
                                 {record.result.explanation}
                               </p>
                             </div>
                           </div>
                           {record.result.recommendation && (
-                            <div className="p-3 bg-orange-50/70 dark:bg-neutral-800/60 rounded-2xl text-xs text-orange-950 dark:text-orange-200 border border-orange-100 dark:border-neutral-700/50 font-medium">
-                              <strong>💡 Consejo:</strong> {record.result.recommendation}
+                            <div className="p-3.5 bg-neutral-50/50 dark:bg-neutral-800/40 rounded-[16px] text-[13px] text-neutral-700 dark:text-neutral-300 font-medium border border-neutral-200/50 dark:border-neutral-700/50">
+                              <strong className="text-neutral-900 dark:text-white">Consejo:</strong> {record.result.recommendation}
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className="space-y-3">
-                          <div className="flex items-start gap-3.5">
-                            <div className="flex gap-1.5 shrink-0">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-4">
+                            <div className="flex gap-2 shrink-0">
                               {record.photoUrl && (
-                                <img 
-                                  src={record.photoUrl} 
-                                  alt="Arriba" 
-                                  title="Lomo / Arriba"
-                                  className="w-14 h-20 sm:w-16 sm:h-22 rounded-2xl object-cover border border-orange-200 dark:border-neutral-700 shadow-2xs"
-                                />
+                                <div className="w-14 h-20 sm:w-16 sm:h-24 rounded-[12px] overflow-hidden border border-neutral-200/80 dark:border-neutral-700/80">
+                                  <img src={record.photoUrl} alt="Lomo" className="w-full h-full object-cover" />
+                                </div>
                               )}
                               {record.photoUrl2 && (
-                                <img 
-                                  src={record.photoUrl2} 
-                                  alt="Perfil" 
-                                  title="Perfil"
-                                  className="w-14 h-20 sm:w-16 sm:h-22 rounded-2xl object-cover border border-orange-200 dark:border-neutral-700 shadow-2xs"
-                                />
+                                <div className="w-14 h-20 sm:w-16 sm:h-24 rounded-[12px] overflow-hidden border border-neutral-200/80 dark:border-neutral-700/80">
+                                  <img src={record.photoUrl2} alt="Perfil" className="w-full h-full object-cover" />
+                                </div>
                               )}
                             </div>
-                            <div className="space-y-1 flex-1">
-                              <span className="text-[11px] text-gray-500 dark:text-neutral-400 font-bold uppercase">Estado:</span>
-                              <div className="flex flex-wrap items-center gap-1.5">
+                            <div className="space-y-2 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <span className={cn(
-                                  "inline-block px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider",
-                                  record.result.status === 'Peso ideal' && "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border dark:border-emerald-800/40",
-                                  record.result.status === 'Bajo peso' && "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 dark:border dark:border-sky-800/40",
-                                  record.result.status === 'Sobrepeso' && "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border dark:border-amber-800/40",
-                                  record.result.status === 'Obesidad' && "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 dark:border dark:border-rose-800/40",
+                                  "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider",
+                                  record.result.status === 'Peso ideal' && "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
+                                  record.result.status === 'Bajo peso' && "bg-sky-50 text-sky-700 dark:bg-sky-900/20 dark:text-sky-400",
+                                  record.result.status === 'Sobrepeso' && "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
+                                  record.result.status === 'Obesidad' && "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400",
                                 )}>
                                   {record.result.status}
                                 </span>
-                                <span className="text-xs font-black text-gray-600 dark:text-neutral-300">
-                                  ({record.result.score}/9)
+                                <span className="text-[12px] font-bold text-neutral-500">
+                                  Score: {record.result.score}/9
                                 </span>
                               </div>
-                              <p className="text-xs text-gray-600 dark:text-neutral-300 mt-1 font-medium line-clamp-2">
+                              <p className="text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-3">
                                 {record.result.explanation}
                               </p>
                             </div>
                           </div>
                           {record.result.recommendation && (
-                            <div className="p-3 bg-emerald-50/70 dark:bg-neutral-800/60 rounded-2xl text-xs text-emerald-950 dark:text-emerald-200 border border-emerald-100 dark:border-neutral-700/50 font-medium">
-                              <strong>🍲 Ración:</strong> {record.result.recommendation}
+                            <div className="p-3.5 bg-neutral-50/50 dark:bg-neutral-800/40 rounded-[16px] text-[13px] text-neutral-700 dark:text-neutral-300 font-medium border border-neutral-200/50 dark:border-neutral-700/50">
+                              <strong className="text-neutral-900 dark:text-white">Ración recomendada:</strong> {record.result.recommendation}
                             </div>
                           )}
                         </div>
@@ -264,91 +259,99 @@ export function History({ onBack, records }: { onBack: () => void, records: Hist
           )}
         </div>
 
-        {/* Right Column: Trend Chart & Mini-Summary */}
-        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+        {/* Right Column: Chart & Stats */}
+        <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
           
-          {/* BCS Chart Card */}
+          {/* Chart Card */}
           {bcsData.length >= 2 ? (
             <motion.div variants={itemVariants}>
-              <div className="rounded-3xl bg-white dark:bg-neutral-900 p-5 sm:p-6 border-2 border-emerald-100 dark:border-neutral-800 shadow-xs">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-black text-orange-950 dark:text-orange-200 flex items-center gap-1.5">
-                    <span>📈</span>
-                    <span>Curva de Condición (BCS)</span>
+              <div className="rounded-[28px] bg-white dark:bg-[#121212] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-[15px] font-bold text-neutral-900 dark:text-white">
+                    Curva de Condición
                   </h3>
-                  <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/50">
-                    Escala 1 a 9
+                  <span className="text-[11px] font-semibold text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-3 py-1 rounded-full">
+                    Escala 1-9
                   </span>
                 </div>
                 <div className="h-48 w-full -ml-4">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={bcsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-200 dark:text-neutral-800" vertical={false} strokeOpacity={0.6} />
+                      <CartesianGrid strokeDasharray="4 4" stroke="currentColor" className="text-neutral-100 dark:text-neutral-800" vertical={false} />
                       <XAxis 
                         dataKey="date" 
-                        tick={{ fontSize: 11, fill: '#9ca3af' }} 
+                        tick={{ fontSize: 11, fill: '#888' }} 
                         axisLine={false} 
                         tickLine={false}
+                        dy={10}
                       />
                       <YAxis 
                         domain={[1, 9]} 
                         ticks={[1, 3, 5, 7, 9]} 
-                        tick={{ fontSize: 11, fill: '#9ca3af' }} 
+                        tick={{ fontSize: 11, fill: '#888' }} 
                         axisLine={false} 
                         tickLine={false}
+                        dx={-10}
                       />
-                      <Tooltip content={<CustomTooltip />} />
+                      <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#888', strokeWidth: 1, strokeDasharray: '4 4' }} />
                       <Line 
                         type="monotone" 
                         dataKey="score" 
-                        stroke="#10b981" 
+                        stroke="#3b82f6" 
                         strokeWidth={3}
-                        dot={{ r: 5, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }}
-                        activeDot={{ r: 7, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+                        dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: 'var(--bg-color, #fff)' }}
+                        activeDot={{ r: 6, fill: '#3b82f6', stroke: 'var(--bg-color, #fff)', strokeWidth: 2 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="text-[11px] text-gray-400 dark:text-gray-500 text-center mt-2 font-medium">
-                  🌟 El score 5/9 representa el peso y masa muscular ideal.
+                <p className="text-[12px] text-neutral-500 text-center mt-4">
+                  El score 5/9 representa el peso óptimo.
                 </p>
               </div>
             </motion.div>
           ) : (
             <motion.div variants={itemVariants}>
-              <div className="rounded-3xl p-6 bg-white dark:bg-neutral-900 border-2 border-emerald-100/70 dark:border-neutral-800 text-center shadow-xs">
-                <span className="text-3xl block mb-2">⚖️</span>
-                <h4 className="font-black text-sm text-gray-800 dark:text-gray-200 mb-1">
-                  Gráfico de Evolución
+              <div className="rounded-[28px] p-8 bg-neutral-50/50 dark:bg-[#121212] border border-neutral-200/50 dark:border-neutral-800/80 text-center shadow-sm">
+                <div className="w-12 h-12 rounded-full bg-white dark:bg-neutral-800 border border-neutral-200/50 dark:border-neutral-700/50 flex items-center justify-center mx-auto mb-4">
+                  <Scale size={20} className="text-neutral-400" />
+                </div>
+                <h4 className="font-semibold text-[14px] text-neutral-900 dark:text-white mb-2">
+                  Gráfica de evolución
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto font-medium">
-                  Guarda al menos 2 evaluaciones de pancita y figura para ver la línea de evolución en el tiempo.
+                <p className="text-[13px] text-neutral-500 max-w-xs mx-auto">
+                  Guarda al menos 2 evaluaciones de figura para ver su tendencia en el tiempo.
                 </p>
               </div>
             </motion.div>
           )}
 
-          {/* Quick Metrics Summary */}
+          {/* Quick Metrics */}
           <motion.div variants={itemVariants}>
-            <div className="rounded-3xl bg-white dark:bg-neutral-900 p-5 space-y-3 border-2 border-orange-100/70 dark:border-neutral-800 shadow-xs">
-              <h4 className="font-black text-xs text-orange-950 dark:text-orange-200 uppercase tracking-wider flex items-center gap-1.5">
-                <span>🐾</span>
-                <span>Resumen de Cuidados</span>
+            <div className="rounded-[28px] bg-white dark:bg-[#121212] p-6 sm:p-8 border border-neutral-200/80 dark:border-neutral-800/80 shadow-sm space-y-4">
+              <h4 className="font-bold text-[14px] text-neutral-900 dark:text-white">
+                Resumen de Evaluaciones
               </h4>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-2xl bg-rose-50/70 dark:bg-neutral-800/60 border border-rose-100 dark:border-neutral-700">
-                  <span className="text-[11px] font-bold text-rose-700 dark:text-rose-400 block">
-                    🐱 Dolor Facial
-                  </span>
-                  <span className="text-2xl font-black text-rose-800 dark:text-rose-300 mt-0.5 block">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity size={14} className="text-orange-500" />
+                    <span className="text-[12px] font-semibold text-neutral-600 dark:text-neutral-400">
+                      Dolor
+                    </span>
+                  </div>
+                  <span className="text-[28px] font-bold text-neutral-900 dark:text-white">
                     {painRecords.length}
                   </span>
                 </div>
-                <div className="p-3 rounded-2xl bg-emerald-50/70 dark:bg-neutral-800/60 border border-emerald-100 dark:border-neutral-700">
-                  <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 block">
-                    ⚖️ Revisiones BCS
-                  </span>
-                  <span className="text-2xl font-black text-emerald-800 dark:text-emerald-300 mt-0.5 block">
+                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Scale size={14} className="text-blue-500" />
+                    <span className="text-[12px] font-semibold text-neutral-600 dark:text-neutral-400">
+                      Peso
+                    </span>
+                  </div>
+                  <span className="text-[28px] font-bold text-neutral-900 dark:text-white">
                     {bcsRecords.length}
                   </span>
                 </div>

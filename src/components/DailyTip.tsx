@@ -1,56 +1,55 @@
 import { useMemo } from 'react';
-import { Sparkles } from 'lucide-react';
 
 const CAT_TIPS = [
   {
     emoji: "💧",
-    title: "¡Agüita fresca y en movimiento!",
-    tip: "A los michis les encanta el agua que fluye. Una fuente puede animarlo a beber mucho más y cuidar sus riñoncitos."
+    title: "Agua en movimiento",
+    tip: "A los michis les encanta el agua que fluye. Una fuente puede animarlo a beber mucho más y cuidar su salud renal."
   },
   {
     emoji: "🧶",
-    title: "¡Hora de jugar y cazar!",
-    tip: "15 minutitos de juego diario con un plumero o cañita mantienen su figura perfecta y liberan todo su instinto feliz."
+    title: "Hora de jugar",
+    tip: "15 minutos de juego diario con un plumero mantienen su figura perfecta y estimulan su instinto."
   },
   {
     emoji: "✨",
-    title: "El arenero impecable",
-    tip: "Los gatos son súper limpios. Limpiar su cajita todos los días evita el estrés y mantiene su hogar feliz."
+    title: "Arenero impecable",
+    tip: "Los gatos son muy limpios. Limpiar su arenero a diario reduce el estrés y mantiene su hogar feliz."
   },
   {
     emoji: "🐾",
-    title: "Sesión de cepillado con mimos",
-    tip: "Cepillar su pelaje no solo evita bolas de pelo, ¡también fortalece muchísimo vuestro vínculo de amor!"
+    title: "Cepillado suave",
+    tip: "Cepillar su pelaje no solo evita bolas de pelo, también fortalece el vínculo entre ustedes."
   },
   {
     emoji: "🐱",
     title: "El lenguaje de sus bigotes",
-    tip: "Si sus bigotes están relajados hacia los lados, tu gatito está calmado y contento. ¡Obsérvalos con cariño!"
+    tip: "Si sus bigotes están relajados hacia los lados, tu gatito está calmado y contento."
   },
   {
     emoji: "🐟",
-    title: "Snacks seguros y saludables",
-    tip: "Evita siempre la cebolla, el ajo o el chocolate. Prémialo con golosinas formuladas especialmente para felinos."
+    title: "Snacks seguros",
+    tip: "Evita siempre la cebolla, el ajo o el chocolate. Prémialo con golosinas formuladas para felinos."
   },
   {
     emoji: "📦",
-    title: "¡El superpoder de las cajas!",
-    tip: "Una simple caja de cartón les da seguridad y un escondite perfecto para jugar y observar su territorio."
+    title: "Refugio seguro",
+    tip: "Una simple caja de cartón les da seguridad y un escondite perfecto para jugar y observar."
   },
   {
     emoji: "💤",
-    title: "Siestas al solecito",
-    tip: "Los gatos duermen entre 12 y 16 horas al día. Tener una camita cerca de una ventana es su paraíso personal."
+    title: "Siestas al sol",
+    tip: "Tener una cama cómoda cerca de una ventana o una fuente de calor natural es su paraíso personal."
   },
   {
     emoji: "🩺",
-    title: "Revisión preventiva anual",
-    tip: "Una visita al veterinario de confianza al año ayuda a detectar a tiempo cualquier molestia antes de que empeore."
+    title: "Revisión anual",
+    tip: "Una visita al veterinario de confianza al año ayuda a detectar a tiempo cualquier molestia."
   },
   {
     emoji: "🎶",
-    title: "El misterio del ronroneo",
-    tip: "El ronroneo libera endorfinas que calman tanto a tu michi como a ti. ¡Es una verdadera terapia de amor!"
+    title: "Terapia de ronroneo",
+    tip: "El ronroneo libera endorfinas que calman tanto a tu michi como a ti."
   }
 ];
 
@@ -62,21 +61,21 @@ export function DailyTip() {
   }, []);
 
   return (
-    <div className="rounded-3xl p-5 sm:p-6 bg-white dark:bg-neutral-900 border-2 border-amber-100 dark:border-neutral-800 shadow-xs transition-colors">
-      <div className="flex gap-4 items-start">
-        <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/30 flex items-center justify-center text-2xl shrink-0 shadow-2xs">
+    <div className="rounded-[28px] p-6 sm:p-8 bg-neutral-50/50 dark:bg-[#121212] border border-neutral-200/50 dark:border-neutral-800/80 transition-colors">
+      <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+        <div className="w-14 h-14 rounded-[20px] bg-white dark:bg-neutral-800 border border-neutral-200/50 dark:border-neutral-700/50 flex items-center justify-center text-[26px] shrink-0 shadow-sm">
           {dailyTip.emoji}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-200/50 dark:border-amber-500/30">
-              Miau-Consejo de Hoy
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              Consejo del día
             </span>
           </div>
-          <h4 className="font-bold text-gray-900 dark:text-white text-base mb-1">
+          <h4 className="font-semibold text-neutral-900 dark:text-white text-[16px] mb-1">
             {dailyTip.title}
           </h4>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-neutral-300 leading-relaxed font-normal">
+          <p className="text-[14px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
             {dailyTip.tip}
           </p>
         </div>

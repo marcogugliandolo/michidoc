@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Camera, ArrowLeft, Loader2, Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
-import { Button, Card, cn } from './ui';
+import { Button, cn } from './ui';
 import { resizeImage } from '../imageUtils';
 import { PainResult } from '../types';
 import { motion } from 'motion/react';
@@ -41,7 +41,7 @@ export function PainCheck({ onBack, onSave }: { onBack: () => void, onSave: (pho
       const data = await res.json();
       setResult(data);
     } catch (err: any) {
-      setError('Miau... No pudimos leer bien la carita. Intenta con una foto con buena luz y de frente.');
+      setError('No pudimos analizar la imagen. Intenta con una foto con buena luz y de frente.');
     } finally {
       setLoading(false);
     }
@@ -57,34 +57,34 @@ export function PainCheck({ onBack, onSave }: { onBack: () => void, onSave: (pho
   const getLevelBadge = (level: string) => {
     switch (level) {
       case 'Ninguno': return { 
-        text: '¡Carita relajada! Sin dolor aparente', 
-        cardBg: 'bg-emerald-50/80 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/60 text-emerald-950 dark:text-emerald-100',
-        badgeColor: 'text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-900/40 border-emerald-200 dark:border-emerald-700', 
-        emoji: '😺' 
+        text: 'Sin dolor aparente', 
+        cardBg: 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/50 dark:border-emerald-800/40 text-emerald-950 dark:text-emerald-100',
+        badgeColor: 'text-emerald-700 dark:text-emerald-300 bg-emerald-100/50 dark:bg-emerald-900/40 border-emerald-200/50 dark:border-emerald-800/50', 
+        icon: '✨' 
       };
       case 'Leve': return { 
-        text: 'Leve tensión o molestia', 
-        cardBg: 'bg-amber-50/80 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60 text-amber-950 dark:text-amber-100',
-        badgeColor: 'text-amber-700 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-900/40 border-amber-200 dark:border-amber-700', 
-        emoji: '😿' 
+        text: 'Leve tensión', 
+        cardBg: 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/40 text-amber-950 dark:text-amber-100',
+        badgeColor: 'text-amber-700 dark:text-amber-300 bg-amber-100/50 dark:bg-amber-900/40 border-amber-200/50 dark:border-amber-800/50', 
+        icon: '⚠️' 
       };
       case 'Moderado': return { 
-        text: 'Dolor moderado detectado', 
-        cardBg: 'bg-orange-50/80 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/60 text-orange-950 dark:text-orange-100',
-        badgeColor: 'text-orange-700 dark:text-orange-300 bg-orange-100/80 dark:bg-orange-900/40 border-orange-200 dark:border-orange-700', 
-        emoji: '😿' 
+        text: 'Dolor moderado', 
+        cardBg: 'bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/40 text-orange-950 dark:text-orange-100',
+        badgeColor: 'text-orange-700 dark:text-orange-300 bg-orange-100/50 dark:bg-orange-900/40 border-orange-200/50 dark:border-orange-800/50', 
+        icon: '⚠️' 
       };
       case 'Alto': return { 
         text: 'Dolor significativo', 
-        cardBg: 'bg-rose-50/80 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/60 text-rose-950 dark:text-rose-100',
-        badgeColor: 'text-rose-700 dark:text-rose-300 bg-rose-100/80 dark:bg-rose-900/40 border-rose-200 dark:border-rose-700', 
-        emoji: '🚨' 
+        cardBg: 'bg-rose-50/50 dark:bg-rose-950/20 border-rose-200/50 dark:border-rose-800/40 text-rose-950 dark:text-rose-100',
+        badgeColor: 'text-rose-700 dark:text-rose-300 bg-rose-100/50 dark:bg-rose-900/40 border-rose-200/50 dark:border-rose-800/50', 
+        icon: '🚨' 
       };
       default: return { 
         text: level, 
-        cardBg: 'bg-gray-50 dark:bg-neutral-900 border-gray-200 dark:border-neutral-800 text-gray-900 dark:text-neutral-100',
-        badgeColor: 'text-gray-700 dark:text-neutral-300 bg-gray-100 dark:bg-neutral-800', 
-        emoji: '🐱' 
+        cardBg: 'bg-neutral-50 dark:bg-[#121212] border-neutral-200/50 dark:border-neutral-800/50 text-neutral-900 dark:text-neutral-100',
+        badgeColor: 'text-neutral-700 dark:text-neutral-300 bg-neutral-100/50 dark:bg-neutral-800/50', 
+        icon: 'ℹ️' 
       };
     }
   };
@@ -93,25 +93,23 @@ export function PainCheck({ onBack, onSave }: { onBack: () => void, onSave: (pho
     <motion.div 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-5xl mx-auto space-y-6 pb-24 md:pb-12"
+      className="max-w-5xl mx-auto space-y-6"
     >
-      {/* Friendly Header with Back Button */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      {/* Sleek Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
           <button 
             onClick={onBack} 
-            className="p-2.5 -ml-2 rounded-2xl bg-orange-100/60 hover:bg-orange-200/70 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-orange-800 dark:text-orange-300 transition-colors cursor-pointer"
-            title="Volver a Mi Casita"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors shadow-sm cursor-pointer"
           >
-            <ArrowLeft size={22} />
+            <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-orange-950 dark:text-orange-200 tracking-tight flex items-center gap-2">
-              <span>🐱</span>
-              <span>¿Le duele la carita?</span>
+            <h1 className="text-[22px] sm:text-[26px] font-bold text-neutral-900 dark:text-white tracking-tight">
+              Chequeo de Dolor
             </h1>
-            <p className="text-xs sm:text-sm text-orange-800/80 dark:text-orange-400 font-medium">
-              Analizamos la Escala de Mueca Felina en sus ojitos, orejas y bigotes
+            <p className="text-[14px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+              Escala de Mueca Felina
             </p>
           </div>
         </div>
@@ -124,61 +122,52 @@ export function PainCheck({ onBack, onSave }: { onBack: () => void, onSave: (pho
               setError('');
               setIsSaved(false);
             }}
-            className="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100/60 dark:bg-neutral-800 px-3 py-1.5 rounded-full hover:bg-orange-200/80 transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="text-[13px] font-semibold text-neutral-600 dark:text-neutral-400 bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 px-4 py-2 rounded-full hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
           >
-            <RefreshCw size={13} />
-            Nueva Foto
+            <RefreshCw size={14} />
+            <span className="hidden sm:inline">Nueva Foto</span>
           </button>
         )}
       </div>
 
-      {/* Main Grid: Upload on Left (5 cols) and Results / Guides on Right (7 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Photo Upload Box */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="rounded-3xl bg-white dark:bg-neutral-900 border-2 border-orange-100/80 dark:border-neutral-800 p-5 sm:p-6 shadow-xs">
-            <h3 className="text-sm font-black text-orange-950 dark:text-orange-200 mb-3 flex items-center gap-2">
-              <span>📸</span>
-              <span>Fotito del Rostro</span>
+          <div className="rounded-[28px] bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 p-6 shadow-sm">
+            <h3 className="text-[15px] font-bold text-neutral-900 dark:text-white mb-4">
+              Fotografía facial
             </h3>
 
             {!photo ? (
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full aspect-square rounded-3xl border-2 border-dashed border-orange-300 dark:border-neutral-700 bg-orange-50/60 dark:bg-neutral-800/50 flex flex-col items-center justify-center text-orange-600 dark:text-orange-400 hover:bg-orange-100/60 dark:hover:bg-neutral-800 transition-all p-6 text-center group cursor-pointer"
+                className="w-full aspect-square rounded-[20px] border-2 border-dashed border-neutral-200 dark:border-neutral-700/50 bg-neutral-50/50 dark:bg-neutral-800/20 flex flex-col items-center justify-center text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100/50 dark:hover:bg-neutral-800/40 transition-all p-6 text-center group cursor-pointer"
               >
-                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-neutral-800 shadow-sm flex items-center justify-center text-3xl mb-3 group-hover:scale-110 transition-transform">
-                  📷
+                <div className="w-16 h-16 rounded-full bg-white dark:bg-neutral-800 shadow-sm flex items-center justify-center text-neutral-400 dark:text-neutral-500 mb-4 group-hover:scale-105 transition-transform">
+                  <Camera size={26} strokeWidth={1.5} />
                 </div>
-                <span className="font-black text-base text-orange-950 dark:text-orange-200">
-                  Toca para tomar o subir fotito
+                <span className="font-semibold text-[15px] text-neutral-900 dark:text-white mb-1">
+                  Subir fotografía
                 </span>
-                <span className="text-xs text-orange-700/80 dark:text-orange-400/80 mt-1 max-w-xs font-medium">
-                  Una foto clara y de frente de su linda carita
+                <span className="text-[13px] text-neutral-500 max-w-xs">
+                  Asegúrate de que la cara esté bien iluminada y de frente.
                 </span>
               </button>
             ) : (
-              <div className="space-y-3">
-                <div className="relative rounded-2xl overflow-hidden shadow-sm aspect-square bg-black/5 dark:bg-black/40">
-                  <img src={photo} alt="Carita del gato" className="w-full h-full object-cover" />
-                  {!loading && (
-                    <Button 
-                      onClick={() => fileInputRef.current?.click()}
-                      variant="secondary"
-                      size="sm"
-                      className="absolute bottom-3 right-3 shadow-md backdrop-blur-md text-xs"
-                    >
-                      🔄 Cambiar fotito
-                    </Button>
-                  )}
+              <div className="space-y-4">
+                <div className="relative rounded-[20px] overflow-hidden shadow-sm aspect-square bg-neutral-100 dark:bg-neutral-800">
+                  <img src={photo} alt="Rostro" className="w-full h-full object-cover" />
                 </div>
 
                 {!result && !loading && (
-                  <Button onClick={analyzePhoto} className="w-full shadow-md text-sm py-3.5" size="lg">
-                    <Sparkles size={16} className="mr-2" />
-                    Analizar carita con IA
-                  </Button>
+                  <button 
+                    onClick={analyzePhoto} 
+                    className="w-full py-3.5 rounded-2xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-semibold text-[15px] shadow-md hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Sparkles size={18} />
+                    Analizar imagen
+                  </button>
                 )}
               </div>
             )}
@@ -192,159 +181,119 @@ export function PainCheck({ onBack, onSave }: { onBack: () => void, onSave: (pho
             />
 
             {error && (
-              <div className="mt-4 p-3.5 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 rounded-2xl text-xs font-semibold border border-rose-200 dark:border-rose-900">
+              <div className="mt-4 p-4 bg-rose-50/50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 rounded-2xl text-[13px] font-medium border border-rose-100 dark:border-rose-900/50">
                 {error}
               </div>
             )}
           </div>
-
-          {/* Quick Loving Tips */}
-          <div className="rounded-3xl bg-amber-50/60 dark:bg-neutral-900 border-2 border-amber-100 dark:border-neutral-800 p-4 shadow-xs">
-            <h4 className="text-xs font-black uppercase tracking-wider text-amber-900 dark:text-amber-300 mb-2 flex items-center gap-1.5">
-              <span>💡</span>
-              <span>Consejos para la mejor foto</span>
-            </h4>
-            <ul className="text-xs text-amber-900/80 dark:text-neutral-300 space-y-1.5 font-medium">
-              <li className="flex items-center gap-1.5">
-                <span>☀️</span>
-                <span>Buena luz natural (evita el flash que lo asuste).</span>
-              </li>
-              <li className="flex items-center gap-1.5">
-                <span>👀</span>
-                <span>Que sus dos ojitos y orejas salgan despejados.</span>
-              </li>
-            </ul>
-          </div>
         </div>
 
-        {/* Right Column: Interactive FGS Guide or Detailed Loving Results */}
+        {/* Right Column: Guide or Results */}
         <div className="lg:col-span-7 space-y-4">
           
           {loading && (
-            <div className="rounded-3xl bg-white dark:bg-neutral-900 p-8 flex flex-col items-center justify-center py-16 text-orange-600 dark:text-orange-400 space-y-4 text-center border-2 border-orange-100 dark:border-neutral-800 shadow-xs">
-              <div className="relative">
-                <Loader2 size={48} className="animate-spin text-orange-500" />
-                <span className="absolute inset-0 flex items-center justify-center text-lg">🐱</span>
-              </div>
-              <div>
-                <h3 className="font-black text-lg text-orange-950 dark:text-orange-200">
-                  Mirando con atención su carita...
-                </h3>
-                <p className="text-xs text-orange-800/80 dark:text-orange-400 mt-1 max-w-sm font-medium">
-                  Examinando la posición de las orejitas, apertura de los ojos y caída de los bigotes con la Escala de Mueca Felina.
-                </p>
-              </div>
+            <div className="rounded-[28px] bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 p-12 flex flex-col items-center justify-center h-full text-center shadow-sm min-h-[400px]">
+              <Loader2 size={40} strokeWidth={2} className="animate-spin text-orange-500 mb-6" />
+              <h3 className="font-bold text-[18px] text-neutral-900 dark:text-white mb-2">
+                Analizando expresiones...
+              </h3>
+              <p className="text-[14px] text-neutral-500 max-w-sm">
+                Evaluando la posición de las orejas, apertura ocular y tensión de los bigotes según el estándar FGS.
+              </p>
             </div>
           )}
 
           {!loading && !result && (
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-neutral-900 border-2 border-orange-100/80 dark:border-neutral-800 text-center flex flex-col items-center justify-center min-h-[340px] shadow-xs">
-              <div className="w-16 h-16 rounded-3xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center text-3xl mb-4 shadow-xs">
-                🐱
+            <div className="rounded-[28px] bg-white dark:bg-[#121212] border border-neutral-200/80 dark:border-neutral-800/80 p-8 sm:p-12 flex flex-col items-center justify-center min-h-[400px] shadow-sm text-center">
+              <div className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-6">
+                <Sparkles size={24} className="text-neutral-400" />
               </div>
-              <h3 className="text-lg font-black text-orange-950 dark:text-orange-200 mb-2">
-                ¿Cómo descubrimos si le duele algo?
+              <h3 className="text-[20px] font-bold text-neutral-900 dark:text-white mb-3">
+                ¿Qué analizamos?
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-neutral-300 max-w-md leading-relaxed mb-6 font-medium">
-                Por instinto, los gatos ocultan sus debilidades. La Escala de Mueca Felina (FGS) es un estándar veterinario que analiza microexpresiones clave que ellos no pueden esconder:
+              <p className="text-[14px] text-neutral-500 max-w-md leading-relaxed mb-8">
+                La Escala de Mueca Felina (FGS) evalúa microexpresiones que indican malestar o dolor, basándose en tres puntos clave:
               </p>
               
-              <div className="grid grid-cols-3 gap-3 w-full max-w-md text-xs font-bold text-gray-700 dark:text-gray-200">
-                <div className="p-3 rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-100 dark:border-neutral-700">
-                  <div className="text-xl mb-1">👂</div>
-                  <div className="text-gray-900 dark:text-white font-bold">Orejitas</div>
-                  <div className="text-[10px] font-normal text-gray-500 dark:text-neutral-400">Hacia adelante o aplastadas</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
+                  <div className="font-bold text-neutral-900 dark:text-white text-[14px] mb-1">Orejas</div>
+                  <div className="text-[12px] text-neutral-500">Posición y rotación</div>
                 </div>
-                <div className="p-3 rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-100 dark:border-neutral-700">
-                  <div className="text-xl mb-1">👀</div>
-                  <div className="text-gray-900 dark:text-white font-bold">Ojitos</div>
-                  <div className="text-[10px] font-normal text-gray-500 dark:text-neutral-400">Abiertos o entrecerrados</div>
+                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
+                  <div className="font-bold text-neutral-900 dark:text-white text-[14px] mb-1">Ojos</div>
+                  <div className="text-[12px] text-neutral-500">Nivel de apertura</div>
                 </div>
-                <div className="p-3 rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-100 dark:border-neutral-700">
-                  <div className="text-xl mb-1">🐾</div>
-                  <div className="text-gray-900 dark:text-white font-bold">Bigotitos</div>
-                  <div className="text-[10px] font-normal text-gray-500 dark:text-neutral-400">Relajados o tensos</div>
+                <div className="p-4 rounded-[20px] bg-neutral-50/50 dark:bg-neutral-800/30 border border-neutral-200/50 dark:border-neutral-700/50">
+                  <div className="font-bold text-neutral-900 dark:text-white text-[14px] mb-1">Bigotes</div>
+                  <div className="text-[12px] text-neutral-500">Tensión y ángulo</div>
                 </div>
               </div>
             </div>
           )}
 
           {result && (
-            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4">
+            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4 h-full">
               {(() => {
                 const badge = getLevelBadge(result.level);
                 return (
-                  <div className={cn("rounded-3xl border-2 p-6 sm:p-7 shadow-xs", badge.cardBg)}>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-current/15">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{badge.emoji}</span>
-                          <span className="text-xs font-black uppercase tracking-wider opacity-75">
-                            Diagnóstico de Bienestar Facial
+                  <div className={cn("rounded-[28px] border p-6 sm:p-8 shadow-sm h-full flex flex-col justify-between", badge.cardBg)}>
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-current/10">
+                        <div>
+                          <span className="text-[11px] font-bold uppercase tracking-wider opacity-60 mb-1 block">
+                            Diagnóstico FGS
                           </span>
+                          <h2 className="text-[24px] sm:text-[28px] font-bold">
+                            {result.level}
+                          </h2>
                         </div>
-                        <h2 className="text-2xl sm:text-3xl font-black mt-1">
-                          Nivel de Dolor: {result.level}
-                        </h2>
-                      </div>
-                      <div className={cn("px-3.5 py-1.5 rounded-full font-bold text-xs self-start sm:self-auto border", badge.badgeColor)}>
-                        {badge.text}
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-4 pt-5">
-                      <div>
-                        <h3 className="font-black text-sm mb-1 opacity-90 flex items-center gap-1.5">
-                          <span>🔍</span>
-                          <span>Lo que observamos en su carita:</span>
-                        </h3>
-                        <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-medium">
-                          {result.explanation}
-                        </p>
+                        <div className={cn("px-4 py-2 rounded-full font-semibold text-[13px] self-start sm:self-auto border flex items-center gap-2", badge.badgeColor)}>
+                          <span>{badge.icon}</span>
+                          <span>{badge.text}</span>
+                        </div>
                       </div>
                       
-                      <div className="pt-3 border-t border-current/15">
-                        <h3 className="font-black text-sm mb-1 opacity-90 flex items-center gap-1.5">
-                          <span>🩺</span>
-                          <span>Recomendación de Cuidados:</span>
-                        </h3>
-                        <p className="text-xs sm:text-sm font-semibold opacity-90 leading-relaxed">
-                          {result.recommendation}
-                        </p>
+                      <div className="space-y-6 pt-6">
+                        <div>
+                          <h3 className="font-bold text-[15px] mb-2 opacity-90">Análisis visual</h3>
+                          <p className="text-[14px] opacity-80 leading-relaxed">
+                            {result.explanation}
+                          </p>
+                        </div>
+                        
+                        <div className="pt-4 border-t border-current/10">
+                          <h3 className="font-bold text-[15px] mb-2 opacity-90">Recomendación</h3>
+                          <p className="text-[14px] opacity-80 leading-relaxed">
+                            {result.recommendation}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
               })()}
 
-              <div className="flex gap-2.5 p-3.5 bg-blue-50/80 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 rounded-2xl text-xs items-start border border-blue-200/60 dark:border-blue-900/40 font-medium">
-                <span className="text-base shrink-0">ℹ️</span>
-                <p>
-                  Esta evaluación con visión computarizada es una guía cariñosa y orientativa. Si notas a tu michi decaído o con cambios de conducta, consulta siempre con un veterinario.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <Button 
+              <div className="flex gap-4 pt-2">
+                <button 
                   onClick={handleSave} 
                   className={cn(
-                    "flex-1 shadow-md py-3 text-sm",
-                    isSaved && "bg-emerald-600 hover:bg-emerald-700"
+                    "flex-1 py-4 rounded-2xl text-[14px] font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md",
+                    isSaved 
+                      ? "bg-emerald-500 text-white" 
+                      : "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:scale-[1.02]"
                   )} 
                   disabled={isSaved}
                 >
                   {isSaved ? (
                     <>
-                      <CheckCircle2 size={16} className="mr-2" />
-                      ¡Guardado en su Álbum!
+                      <CheckCircle2 size={18} />
+                      Guardado
                     </>
                   ) : (
-                    '🐾 Guardar en el Álbum Clínico'
+                    'Guardar resultado'
                   )}
-                </Button>
-                <Button onClick={onBack} variant="secondary" className="text-sm py-3">
-                  Volver a Mi Casita
-                </Button>
+                </button>
               </div>
             </motion.div>
           )}

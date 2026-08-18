@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Camera, CheckCircle2, Sparkles, Heart } from 'lucide-react';
+import { X, Camera } from 'lucide-react';
 import { Button, cn } from './ui';
 import { resizeImage } from '../imageUtils';
 import { CatProfile } from '../types';
@@ -36,13 +36,15 @@ export function EditProfileModal({ isOpen, onClose, profile, onSave }: EditProfi
       onSave({
         name: name.trim(),
         age: age.trim(),
-        breed: breed.trim(),
+        breed: breed.trim() || 'Mestizo / Común',
         photoUrl: photo
       });
       setIsSaving(false);
       onClose();
     }, 250);
   };
+
+  const breedSuggestions = ['Común Europeo', 'Siamés', 'Persa', 'Mestizo'];
 
   if (!isOpen) return null;
 
@@ -55,51 +57,53 @@ export function EditProfileModal({ isOpen, onClose, profile, onSave }: EditProfi
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+          className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
         />
 
         {/* Dialog Content */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          exit={{ opacity: 0, scale: 0.95, y: 12 }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="relative w-full max-w-md bg-white dark:bg-neutral-900 rounded-3xl p-6 sm:p-7 shadow-2xl border-2 border-orange-100 dark:border-neutral-800 z-10 overflow-hidden"
+          className="relative w-full max-w-[420px] bg-white dark:bg-[#121212] rounded-[32px] p-7 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-neutral-100 dark:border-neutral-800/80 z-10 overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-orange-100/70 dark:border-neutral-800">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🐱</span>
-              <h2 className="text-lg sm:text-xl font-black text-orange-950 dark:text-orange-100">
-                Editar Perfil del Michi
-              </h2>
-            </div>
+          <div className="flex items-center justify-between pb-5 border-b border-neutral-100 dark:border-neutral-800/80 mb-6">
+            <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
+              Editar Perfil
+            </h2>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-full hover:bg-orange-100 dark:hover:bg-neutral-800 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors cursor-pointer"
+              className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800/80 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
             >
-              <X size={18} />
+              <X size={20} />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
             {/* Photo Avatar Editor */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="relative group">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-orange-300 dark:border-orange-600 bg-orange-100 shadow-sm">
-                  <img
-                    src={photo}
-                    alt={name || "Michi"}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+            <div className="flex justify-center">
+              <div className="relative">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white p-2 rounded-full shadow-md transition-all cursor-pointer"
+                  className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden transition-all duration-300 group ring-4 ring-white dark:ring-[#121212] shadow-sm cursor-pointer border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50"
+                >
+                  <img
+                    src={photo}
+                    alt={name || "Michi"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 p-2.5 rounded-full shadow-md hover:scale-110 transition-transform cursor-pointer"
                   title="Cambiar foto"
                 >
-                  <Camera size={16} />
+                  <Camera size={14} />
                 </button>
               </div>
 
@@ -110,74 +114,89 @@ export function EditProfileModal({ isOpen, onClose, profile, onSave }: EditProfi
                 ref={fileInputRef}
                 onChange={handlePhoto}
               />
-              <span className="text-[11px] font-bold text-orange-600 dark:text-orange-400">
-                Toca la camarita para cambiar su foto 📸
-              </span>
             </div>
 
             {/* Input Fields */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs font-black text-orange-950 dark:text-orange-200 uppercase tracking-wider mb-1">
-                  Nombre del Michi *
+                <label className="block text-[13px] font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5 ml-1">
+                  Nombre
                 </label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300 p-3 text-sm transition-all outline-none font-semibold text-gray-900 dark:text-gray-100"
+                  className="w-full bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl px-4 py-3 text-[15px] text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:bg-white dark:focus:bg-[#121212] focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none"
                   placeholder="Ej. Pelusa"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-black text-orange-950 dark:text-orange-200 uppercase tracking-wider mb-1">
-                    Edad *
+                  <label className="block text-[13px] font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5 ml-1">
+                    Edad
                   </label>
                   <input
                     type="text"
                     required
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    className="w-full rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300 p-3 text-sm transition-all outline-none font-semibold text-gray-900 dark:text-gray-100"
+                    className="w-full bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl px-4 py-3 text-[15px] text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:bg-white dark:focus:bg-[#121212] focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none"
                     placeholder="Ej. 3 años"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black text-orange-950 dark:text-orange-200 uppercase tracking-wider mb-1">
+                  <label className="block text-[13px] font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5 ml-1">
                     Raza
                   </label>
                   <input
                     type="text"
                     value={breed}
                     onChange={(e) => setBreed(e.target.value)}
-                    className="w-full rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300 p-3 text-sm transition-all outline-none font-semibold text-gray-900 dark:text-gray-100"
-                    placeholder="Ej. Común Europeo"
+                    className="w-full bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl px-4 py-3 text-[15px] text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:bg-white dark:focus:bg-[#121212] focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none"
+                    placeholder="Ej. Mestizo"
                   />
                 </div>
+              </div>
+
+              {/* Quick Breed Pills */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {breedSuggestions.map(b => (
+                  <button
+                    type="button"
+                    key={b}
+                    onClick={() => setBreed(b)}
+                    className={cn(
+                      "text-[12px] font-medium px-3.5 py-1.5 rounded-full border transition-all cursor-pointer",
+                      breed === b
+                        ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-neutral-900 dark:border-white"
+                        : "bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-800 hover:border-neutral-400"
+                    )}
+                  >
+                    {b}
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2.5 pt-3">
-              <Button
+            <div className="flex gap-3 pt-4">
+              <button
                 type="button"
-                variant="secondary"
                 onClick={onClose}
-                className="flex-1 py-3 text-xs"
+                className="flex-1 py-3.5 rounded-2xl text-[14px] font-semibold bg-neutral-100 dark:bg-neutral-800/80 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
                 Cancelar
-              </Button>
-              <Button
+              </button>
+              <button
                 type="submit"
                 disabled={!name.trim() || !age.trim() || isSaving}
-                className="flex-1 py-3 text-xs shadow-md shadow-orange-500/20"
+                className="flex-1 py-3.5 rounded-2xl text-[14px] font-semibold bg-orange-500 hover:bg-orange-600 text-white shadow-[0_8px_20px_rgb(249,115,22,0.25)] hover:shadow-[0_8px_25px_rgb(249,115,22,0.35)] transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               >
-                {isSaving ? 'Guardando...' : '🐾 Guardar Cambios'}
-              </Button>
+                {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+              </button>
             </div>
           </form>
         </motion.div>

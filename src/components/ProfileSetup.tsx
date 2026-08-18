@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Sparkles } from 'lucide-react';
-import { Button, cn } from './ui';
+import { Camera } from 'lucide-react';
+import { cn } from './ui';
 import { resizeImage } from '../imageUtils';
 import { CatProfile } from '../types';
 import { motion } from 'motion/react';
-import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
 
 export function ProfileSetup({ onComplete }: { onComplete: (p: CatProfile) => void }) {
@@ -16,155 +15,166 @@ export function ProfileSetup({ onComplete }: { onComplete: (p: CatProfile) => vo
 
   const handlePhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const resized = await resizeImage(e.target.files[0], 400);
+      const resized = await resizeImage(e.target.files[0], 500);
       setPhoto(resized);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !age || !photo) return;
-    onComplete({ name, age, breed, photoUrl: photo });
+    if (!name.trim() || !age.trim() || !photo) return;
+    onComplete({
+      name: name.trim(),
+      age: age.trim(),
+      breed: breed.trim() || 'Mestizo / Común',
+      photoUrl: photo
+    });
   };
 
+  const breedSuggestions = ['Común Europeo', 'Siamés', 'Persa', 'Mestizo'];
+
   return (
-    <div className="min-h-screen bg-[#fff8f3] dark:bg-neutral-950 flex items-center justify-center p-4 sm:p-6 relative">
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+    <div className="min-h-screen bg-[#faf8f5] dark:bg-[#0a0a0a] flex flex-col items-center justify-center p-4 sm:p-8 relative selection:bg-orange-200 dark:selection:bg-orange-900 transition-colors duration-300">
+      <div className="absolute top-6 right-6 z-20">
         <ThemeToggle />
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md lg:max-w-3xl grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded-3xl bg-white dark:bg-neutral-900 shadow-xl border-2 border-orange-200/80 dark:border-neutral-800"
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md bg-white dark:bg-[#121212] rounded-[32px] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-neutral-100 dark:border-neutral-800/80 relative z-10"
       >
-        {/* Left Side: Friendly Cat Greeting Panel */}
-        <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-orange-400 via-amber-400 to-rose-400 p-8 text-white flex-col justify-between relative overflow-hidden">
-          <div className="space-y-6 relative z-10">
-            <div className="flex items-center gap-3">
-              <Logo className="w-12 h-12 drop-shadow-md" />
-              <div>
-                <h1 className="text-2xl font-black tracking-tight">MichiDoc</h1>
-                <p className="text-xs text-orange-100 font-bold">🐾 Registro del Gatito</p>
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-2">
-              <h2 className="text-xl font-black leading-snug">
-                ¡Vamos a conocer al rey o reina de la casa! 👑
-              </h2>
-              <p className="text-xs text-orange-50 font-medium leading-relaxed">
-                Cuéntanos cómo se llama tu michi y sube su fotito favorita para personalizar todos sus chequeos y consejos diarios.
-              </p>
-            </div>
-          </div>
-
-          <div className="text-[11px] text-orange-100 font-bold relative z-10 flex items-center gap-1">
-            <span>❤️</span> Cuidados pensados para su felicidad
-          </div>
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-neutral-900 dark:text-white mb-2">
+            Conozcamos a tu michi
+          </h1>
+          <p className="text-[15px] text-neutral-500 dark:text-neutral-400">
+            Añade su información para crear su diario clínico.
+          </p>
         </div>
 
-        {/* Right Side: Setup Form */}
-        <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-center">
-          <div className="text-center lg:text-left mb-5">
-            <div className="lg:hidden flex flex-col items-center mb-3">
-              <Logo className="w-14 h-14 mb-1 drop-shadow-sm" />
-            </div>
-            <h2 className="text-2xl font-black text-orange-950 dark:text-orange-100">
-              ¿Quién es tu michi? 🐱
-            </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
-              Completa su perfil para empezar su diario de salud
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            {/* Photo Avatar Picker */}
-            <div className="flex flex-col items-center gap-1.5 pb-1">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Photo Avatar */}
+          <div className="flex justify-center mb-8">
+            <div className="relative">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  "w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-orange-200 dark:border-neutral-700 bg-orange-50/70 dark:bg-neutral-800/50 flex items-center justify-center text-orange-400 transition-all hover:border-orange-400 cursor-pointer shadow-sm group",
-                  !photo && "border-dashed"
+                  "w-28 h-28 rounded-full flex items-center justify-center overflow-hidden transition-all duration-300 group ring-4 ring-white dark:ring-[#121212] shadow-sm cursor-pointer",
+                  photo
+                    ? "bg-neutral-100"
+                    : "bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 )}
               >
                 {photo ? (
-                  <img src={photo} alt="Preview" className="w-full h-full object-cover" />
+                  <img src={photo} alt="Avatar" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <div className="flex flex-col items-center text-center p-2">
-                    <span className="text-2xl group-hover:scale-110 transition-transform mb-1">📸</span>
-                    <span className="text-[11px] font-black text-orange-700 dark:text-orange-300">Subir Fotito</span>
+                  <div className="flex flex-col items-center gap-1.5 text-neutral-400 dark:text-neutral-500 group-hover:text-orange-500 transition-colors">
+                    <Camera size={26} strokeWidth={1.5} />
                   </div>
                 )}
               </button>
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                ref={fileInputRef} 
-                onChange={handlePhoto}
-              />
-              {!photo && (
-                <span className="text-[11px] text-orange-600 dark:text-orange-400 font-bold">
-                  Toca para elegir su mejor foto 🐾
-                </span>
+              {photo && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 p-2.5 rounded-full shadow-md hover:scale-110 transition-transform cursor-pointer"
+                >
+                  <Camera size={14} />
+                </button>
               )}
             </div>
+            <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handlePhoto} />
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-black text-orange-950 dark:text-orange-200 uppercase tracking-wider mb-1">
-                  Nombre del gato *
-                </label>
-                <input 
-                  type="text" 
-                  required
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  className="w-full rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300 p-3 text-sm transition-all outline-none"
-                  placeholder="Ej. Pelusa, Garfield..."
-                />
-              </div>
+          {/* Inputs */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-[13px] font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5 ml-1">
+                Nombre
+              </label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className="w-full bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl px-4 py-3.5 text-[15px] text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:bg-white dark:focus:bg-[#121212] focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none"
+                placeholder="Ej. Pelusa"
+              />
+            </div>
 
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-black text-orange-950 dark:text-orange-200 uppercase tracking-wider mb-1">
-                  Edad *
+                <label className="block text-[13px] font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5 ml-1">
+                  Edad
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   value={age}
                   onChange={e => setAge(e.target.value)}
-                  className="w-full rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300 p-3 text-sm transition-all outline-none"
-                  placeholder="Ej. 2 años"
+                  className="w-full bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl px-4 py-3.5 text-[15px] text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:bg-white dark:focus:bg-[#121212] focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none"
+                  placeholder="Ej. 3 años"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5 ml-1">
+                  Raza <span className="text-neutral-400 font-normal">(Opcional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={breed}
+                  onChange={e => setBreed(e.target.value)}
+                  className="w-full bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl px-4 py-3.5 text-[15px] text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:bg-white dark:focus:bg-[#121212] focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none"
+                  placeholder="Ej. Mestizo"
                 />
               </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-black text-orange-950 dark:text-orange-200 uppercase tracking-wider mb-1">
-                Raza (Opcional)
-              </label>
-              <input 
-                type="text" 
-                value={breed}
-                onChange={e => setBreed(e.target.value)}
-                className="w-full rounded-2xl bg-orange-50/70 dark:bg-neutral-800/80 border border-orange-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300 p-3 text-sm transition-all outline-none"
-                placeholder="Ej. Común Europeo, Siamés, Mestizo..."
-              />
-            </div>
+          {/* Suggestions */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            {breedSuggestions.map(b => (
+              <button
+                type="button"
+                key={b}
+                onClick={() => setBreed(b)}
+                className={cn(
+                  "text-[12px] font-medium px-3.5 py-1.5 rounded-full border transition-all cursor-pointer",
+                  breed === b
+                    ? "bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-neutral-900 dark:border-white"
+                    : "bg-white dark:bg-[#121212] text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-800 hover:border-neutral-400"
+                )}
+              >
+                {b}
+              </button>
+            ))}
+          </div>
 
-            <Button 
-              type="submit" 
-              size="lg" 
-              className="w-full mt-3 shadow-md shadow-orange-500/20 py-3.5 text-sm"
-              disabled={!name || !age || !photo}
+          {/* Action */}
+          <div className="pt-4">
+            <button
+              type="submit"
+              className={cn(
+                "w-full py-4 rounded-2xl text-[15px] font-semibold transition-all duration-300 flex items-center justify-center gap-2",
+                (!name.trim() || !age.trim() || !photo)
+                  ? "bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500 shadow-none cursor-not-allowed"
+                  : "bg-orange-500 hover:bg-orange-600 text-white shadow-[0_8px_20px_rgb(249,115,22,0.25)] hover:shadow-[0_8px_25px_rgb(249,115,22,0.35)] hover:-translate-y-0.5 cursor-pointer"
+              )}
+              disabled={!name.trim() || !age.trim() || !photo}
             >
-              🐾 Empezar a Cuidar de {name || 'mi Michi'}
-            </Button>
-          </form>
-        </div>
+              {name && photo ? `Comenzar con ${name}` : 'Comenzar'}
+            </button>
+            {!photo && (
+              <p className="text-[12px] text-center text-neutral-500 mt-4 font-medium">
+                📸 Por favor, sube una foto para continuar.
+              </p>
+            )}
+          </div>
+        </form>
       </motion.div>
     </div>
   );
